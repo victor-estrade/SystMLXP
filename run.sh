@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #SBATCH --account=tau
-#SBATCH --job-name=mnist
-#SBATCH --output=%j_mnist.log
+#SBATCH --job-name=SystMLXP
+#SBATCH --output=%j_SystMLXP.log
 #SBATCH -t 8:00:00             # max runtime hours:min:sec
 #SBATCH --cpus-per-task=6
 #SBATCH --gres=gpu:1
@@ -19,7 +19,7 @@ date;hostname;pwd
 export PATH="/home/tao/${USER}/miniconda3/bin:$PATH"
 # source /home/tao/${USER}/miniconda3/bin/activate default
 
-WORKDIR="/home/tao/${USER}/workspace/SystML/mnist"
+WORKDIR="/home/tao/${USER}/workspace/SystML/SystMLXP"
 cd $WORKDIR
 
 python main.py $@
