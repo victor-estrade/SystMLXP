@@ -54,9 +54,9 @@ def get_model( n_features=29, n_classes=2, learning_rate=LEARNING_RATE, verbose=
         if training:
             z_list = [np.random.normal( loc=0, scale=WIDTH, size=(X.shape[0]) ) for _ in range(5)]
             X = np.concatenate( [X,] + [ skew(X, z) for z in z_list ], axis=0)
-            y = np.concatenate( [y,] + [y for y in range(5) ], axis=0)
+            y = np.concatenate( [y,] + [y for _ in range(5) ], axis=0)
             if W is not None:
-            	W = np.concatenate( [W,] + [W for W in range(5) ], axis=0)
+            	W = np.concatenate( [W,] + [W for _ in range(5) ], axis=0)
         if preprocessing is not None:
             X, y, W = preprocessing(X, y, W)
         return X, y, W
