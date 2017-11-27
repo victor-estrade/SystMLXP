@@ -16,6 +16,7 @@ import pandas as pd
 from problem.workflow import print
 
 from myNN import get_model as get_model_NN
+from myNNA import get_model as get_model_NNA
 from myNNDA import get_model as get_model_NNDA
 from myTP import get_model as get_model_TP
 from myPAN import get_model as get_model_PAN
@@ -23,6 +24,7 @@ from myPAN import get_model as get_model_PAN
 
 MODELS = {
         'NN': get_model_NN,
+        'NNA': get_model_NNA,
         'NNDA': get_model_NNDA,
         'TP': get_model_TP,
         'PAN': get_model_PAN,
