@@ -115,7 +115,7 @@ def train_submission(model, X, y):
         y_train = y[idx_dev]
         
         print('training {}/{}...'.format(i+1, n_cv))
-        model.fit(X, y)
+        model.fit(X_train, y_train)
 
         print('saving model {}/{}...'.format(i+1, n_cv))
         model_name = '{}-{}'.format(model.get_name(), i)
