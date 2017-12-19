@@ -103,7 +103,8 @@ def get_cv_iter(X, y):
 
 
 def get_save_directory():
-    return os.path.join( _get_save_directory(), 'mnist')
+    dir = os.path.join( _get_save_directory(), 'mnist')
+    return check_dir(dir)
 
 
 def train_submission(model, X, y):

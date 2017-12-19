@@ -673,7 +673,8 @@ def get_cv_iter(X, y):
 
 
 def get_save_directory():
-    return os.path.join( _get_save_directory(), 'higgs_geant')
+    dir = os.path.join( _get_save_directory(), 'higgs_geant')
+    return check_dir(dir)
 
 
 def split_data_label_weights(data):
