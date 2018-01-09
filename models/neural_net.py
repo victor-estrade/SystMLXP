@@ -164,7 +164,7 @@ class NeuralNet(BaseEstimator, ClassifierMixin):
         for X_batch in batch_gen:
             X_batch = X_batch.astype(np.float32)
             X_batch = make_variable(X_batch, cuda=self.cuda, volatile=True)
-            proba_batch = nn.Softmax()(self.net(X_batch)).cpu().data.numpy()
+            proba_batch = nn.Softmax(dim=1)(self.net(X_batch)).cpu().data.numpy()
             y_proba.extend(proba_batch)
         y_proba = np.array(y_proba)
         return y_proba 

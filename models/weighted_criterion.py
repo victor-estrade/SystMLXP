@@ -24,7 +24,7 @@ def to_one_hot(y, n_class=2):
 
 class WeightedCrossEntropyLoss(nn.Module):
     def forward(self, input, one_hot, weight):
-        log_soft = - F.log_softmax(input)
+        log_soft = - F.log_softmax(input, dim=1)
         element_loss = torch.sum(log_soft * one_hot, 1) * weight
         loss = torch.mean(element_loss)
         return loss
