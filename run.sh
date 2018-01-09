@@ -16,8 +16,12 @@
 date;hostname;pwd
 
 # Manually add miniconda to PATH. Don't know why the .basrc is not correctly sourced
-export PATH="/home/tao/${USER}/miniconda3/bin:$PATH"
+# export PATH="/home/tao/${USER}/miniconda3/bin:$PATH"
 # source /home/tao/${USER}/miniconda3/bin/activate default
+
+bash "${HOME}/adapt_conda.sh"
+
+source activate py35
 
 WORKDIR="/home/tao/${USER}/workspace/SystML/SystMLXP"
 cd $WORKDIR
