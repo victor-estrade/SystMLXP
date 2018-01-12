@@ -184,7 +184,7 @@ class TangentPropagation(BaseEstimator, ClassifierMixin):
             X_batch = X_batch.astype(np.float32)
             X_batch = make_variable(X_batch, cuda=self.cuda, volatile=True)
             out, _ = self.net(X_batch, X_batch)
-            proba_batch = nn.Softmax()(out).cpu().data.numpy()
+            proba_batch = nn.Softmax(dim=1)(out).cpu().data.numpy()
             y_proba.extend(proba_batch)
         y_proba = np.array(y_proba)
         return y_proba 
