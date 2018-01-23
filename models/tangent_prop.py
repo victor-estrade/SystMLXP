@@ -32,10 +32,6 @@ TODO : Add code
 __version__ = "0.1"
 __author__ = "Victor Estrade"
 
-from sklearn.base import BaseEstimator, ClassifierMixin
-from models.minibatch import OneEpoch, EpochShuffle, OneEpochShuffle
-from models.weighted_criterion import WeightedCrossEntropyLoss, to_one_hot
-from itertools import islice
 
 
 def make_variable(arr, cuda=True, volatile=False):
