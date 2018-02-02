@@ -117,7 +117,7 @@ def get_data_shape(data_name):
     else:
         raise ValueError('Unrecognise dataset name : {}'
                          'Expected one from {}'. format(data_name, DATA))
-        return load_data
+        return None
 
 
 def get_problem_functions(data_name):
