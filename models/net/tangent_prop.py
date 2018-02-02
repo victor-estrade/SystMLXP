@@ -163,7 +163,7 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
             self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
             y_pred, j_pred = self.jnet(X_batch, T_batch)
             loss = self.criterion(y_pred, y_batch, w_batch) 
-            jloss = torch.sum(j_pred ** 2, 1) * w_batch
+            jloss = torch.sum( j_pred * j_pred, 1) * w_batch
             loss = loss + self.trade_off *  torch.mean(jloss)
             loss.backward() # compute gradients
             self.optimizer.step() # update params
