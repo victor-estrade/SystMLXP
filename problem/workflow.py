@@ -15,7 +15,7 @@ except ImportError as e:
 	import  __builtin__
 
 
-def print(*args, sep=' ', flush=True, end='\n', file=sys.stdout):
+def pprint(*args, sep=' ', flush=True, end='\n', file=sys.stdout):
     now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     __builtin__.print(now, *args, sep=sep, flush=flush, end=end, file=file)
 
