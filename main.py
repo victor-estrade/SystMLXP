@@ -5,32 +5,40 @@ from __future__ import division
 from __future__ import absolute_import
 from __future__ import unicode_literals
 
-import datetime
-import os
+# import datetime
+# import os
 import argparse
 import inspect
 
-import numpy as np
-import pandas as pd
+# import numpy as np
+# import pandas as pd
 
-from problem.workflow import print
+from problem.workflow import pprint
 
-from myNN import get_model as get_model_NN
-from myNNA import get_model as get_model_NNA
-from myNNDA import get_model as get_model_NNDA
-from myTP import get_model as get_model_TP
-from myPAN import get_model as get_model_PAN
+from models.mnist import mnist_models
+from models.fashion_mnist import fashion_mnist_models
+from models.higsml import higsml_models
+from models.higgsuci import higgsuci_models
+
+from problem import mnist
+from problem import fashion_mnist
+from problem import higgs_geant
+from problem import higgs_uci
 
 
 MODELS = {
-        'NN': get_model_NN,
-        'NNA': get_model_NNA,
-        'NNDA': get_model_NNDA,
-        'TP': get_model_TP,
-        'PAN': get_model_PAN,
+        'mnist': mnist_models,
+        'fashion-mnist': fashion_mnist_models,
+        'higgs-geant': higsml_models,
+        'higgs-uci': higgsuci_models,
          }
 
-DATA = ['mnist', 'fashion-mnist', 'higgs-geant', 'higgs-uci',]
+PROBLEMS = {
+        'mnist': mnist,
+        'fashion-mnist': fashion_mnist,
+        'higgs-geant': higgs_geant,
+        'higgs-uci': higgs_uci,
+        }
 
 
 def parse_args():
@@ -44,7 +52,7 @@ def parse_args():
     
     # DATASET CHOICE
     parser.add_argument('--data', help='chosen dataset',
-        type=str, choices=DATA, default='mnist' )
+        type=str, choices=PROBLEMS.keys(), default='mnist' )
     
     # MODEL CHOICE
     parser.add_argument('model', help='model to train',
@@ -89,97 +97,53 @@ def extract_model_args(args, get_model):
     model_args = { k: args_dict[k] for k in sig.parameters.keys() if k in args_dict.keys() }
     return model_args
 
-def get_data_loader(data_name):
-    if data_name == 'mnist':
-        from problem.mnist import load_data
-    elif data_name == 'fashion-mnist':
-        from problem.fashion_mnist import load_data
-    elif data_name == 'higgs-geant':
-        from problem.higgs_geant import load_data
-    elif data_name == 'higgs-uci':
-        from problem.higgs_uci import load_data
+
+#=====================================================================
+# stuff
+#=====================================================================
+def load_problem(data_name):
+    problem = None
+    if data_name in PROBLEMS:
+        problem = PROBLEMS[data_name]
     else:
-        raise ValueError('Unrecognise dataset name : {}'
-                         'Expected one from {}'. format(data_name, DATA))
-    return load_data
+        raise ValueError('Unrecognized dataset name : {}'
+                         'Expected one from {}'. format(data_name, PROBLEMS.keys()))
+    return problem
 
-
-def get_data_shape(data_name):
-    """ Return n_features, n_classes"""
-    if data_name == 'mnist':
-        return 28*28, 10
-    elif data_name == 'fashion-mnist':
-        return 28*28, 10
-    elif data_name == 'higgs-geant':
-        return 29, 2
-    elif data_name == 'higgs-uci':
-        return 14, 2
+def get_model_class(data_name, model_name):
+    model_class = None
+    if data_name in MODELS:
+        model_class = MODELS[data_name](model_name)
     else:
-        raise ValueError('Unrecognise dataset name : {}'
-                         'Expected one from {}'. format(data_name, DATA))
-        return None
-
-
-def get_problem_functions(data_name):
-    if data_name == 'mnist':
-        from problem.mnist import preprocessing
-        from problem.mnist import skew
-        from problem.mnist import tangent
-        from problem.mnist import train_submission
-
-        return train_submission, preprocessing, skew, tangent
-
-    if data_name == 'fashion-mnist':
-        from problem.fashion_mnist import preprocessing
-        from problem.fashion_mnist import skew
-        from problem.fashion_mnist import tangent
-        from problem.fashion_mnist import train_submission
-
-        return train_submission, preprocessing, skew, tangent
-
-    elif data_name == 'higgs-geant':
-        from problem.higgs_geant import skew
-        from problem.higgs_geant import tangent
-        from problem.higgs_geant import train_submission
-
-        return train_submission, None, skew, tangent
-
-    elif data_name == 'higgs-uci':
-        from problem.higgs_uci import skew
-        from problem.higgs_uci import tangent
-        from problem.higgs_uci import train_submission
-
-        return train_submission, None, skew, tangent
-
-    else:
-        raise ValueError('Unrecognise dataset name : {}'
-                         'Expected one from {}'. format(data_name, DATA))
-
+        raise ValueError('Unrecognized dataset name : {}'
+                         'Expected one from {}'. format(data_name, MODELS.keys()))
+    return model_class
 
 #=====================================================================
 # MAIN
 #=====================================================================
 def main():
     args = parse_args()
-    print(args)
+    pprint(args)
 
-    print('Hello')
-    load_data = get_data_loader(args.data) 
-    train_submission, args.preprocessing, args.skew, args.tangent = get_problem_functions(args.data)
-    args.n_features, args.n_classes = get_data_shape(args.data)
+    pprint('Hello')
+    problem = load_problem(args.data)
 
-    print('Building model ...')
-    get_model = MODELS[args.model]
-    model_args = extract_model_args(args, get_model)
-    print( 'Model :', args.model)
-    print( 'model_args :', model_args )
-    model = get_model(**model_args)
+    pprint('Building model ...')
+    pprint( 'Model :', args.model)
+    model_class = get_model_class(args.data, args.model)
+    args.skewing_function = problem.skew
+    args.tangent = problem.tangent
+    model_args = extract_model_args(args, model_class)
+    pprint( 'model_args :', model_args )
+    model = model_class(**model_args)
 
-    print('Loading data ...')
-    X, y = load_data()
+    pprint('Loading data ...')
+    X, y = problem.load_data()
 
-    print('Start training submission :', model.get_name())
-    train_submission(model, X, y)
+    pprint('Start training submission :', model.get_name())
+    problem.train_submission(model, X, y)
+
 
 if __name__ == '__main__':
     main()
