@@ -39,6 +39,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y, sample_weight=None):
         X = X.reshape(-1, 28*28)  / 255
+        print('SHAPE', X.shape)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
