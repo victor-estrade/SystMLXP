@@ -14,7 +14,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.externals import joblib
 
 from .net.neural_net import NeuralNetClassifier
-# from .net.neural_net import NeuralNetRegressor
 
 from .net.weighted_criterion import WeightedCrossEntropyLoss
 from .architecture import Net
