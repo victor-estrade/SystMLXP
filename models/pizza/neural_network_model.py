@@ -17,7 +17,7 @@ from .net.neural_net import NeuralNetClassifier
 # from .net.neural_net import NeuralNetRegressor
 
 from .net.weighted_criterion import WeightedCrossEntropyLoss
-from .architecture.pizza import Net
+from .architecture import Net
 
 class NeuralNetModel(BaseEstimator, ClassifierMixin):
     def __init__(self, n_steps=5000, batch_size=20, learning_rate=1e-3, cuda=False, verbose=0):
@@ -72,5 +72,9 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         return self
     
     def describe(self):
-        return dict(name='neural_net', learning_rate=self.learning_rate)
-    
+        return dict(name='neural_net', learning_rate=self.learning_rate, 
+                    n_steps=self.n_steps, batch_size=self.batch_size)
+        
+    def get_name(self):
+        name = "NeuralNetModel-{}-{}-{}".format(self.n_steps, self.batch_size, self.learning_rate)
+        return name

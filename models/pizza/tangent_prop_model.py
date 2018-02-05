@@ -6,6 +6,8 @@ from __future__ import unicode_literals
 
 import os
 
+import numpy as np
+
 import torch
 import torch.optim as optim
 
@@ -17,7 +19,23 @@ from .net.tangent_prop import TangentPropClassifier
 from .net.weighted_criterion import WeightedCrossEntropyLoss
 from .tangent_extract import TangentExtractor
 
-from .architecture.pizza.jnet import JNet
+from .architecture import JNet
+
+class TangentComputer(object):
+    """ For 2D rotation """
+    def __init__(self):
+        super().__init__()
+
+    def compute_tangent(self, X):
+        """ The real formula to get the tangent. """
+        X_2 = X*X
+        rho = np.sqrt(X_2[:,0]+X_2[:,1])
+        theta = np.arctan2(X[:, 1], X[:, 0])
+        theta = theta
+        X_2[:, 0] = -rho*np.sin(theta)
+        X_2[:, 1] = rho*np.cos(theta)
+        return X_2
+
 
 class TangentPropModel(BaseEstimator, ClassifierMixin):
     def __init__(self, skewing_function, n_steps=5000, batch_size=20, learning_rate=1e-3, trade_off=1, alpha=1e-2, cuda=False, verbose=0):
@@ -80,5 +98,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         return self
     
     def describe(self):
-        return dict(name='neural_net', learning_rate=self.learning_rate)
+        return dict(name='tangent_prop', n_steps=self.n_steps, batch_size=self.batch_size, 
+                    learning_rate=self.learning_rate, trade_off=self.trade_off, alpha=self.alpha)
     
+    def get_name(self):
+        name = "TangentPropModel-{}-{}-{}-{}-{}".format(self.n_steps, self.batch_size, 
+                            self.learning_rate, self.trade_off, self.alpha)
+        return name
+
