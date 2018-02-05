@@ -13,3 +13,19 @@ from .tangent_prop_model import TangentPropModel
 from .tangent_prop_model import AugmentedTangentPropModel
 
 from .pivot_model import PivotModel
+
+
+MODELS = {
+    'NN' : NeuralNetModel,
+    'ANN' : AugmentedNeuralNetModel,
+    'TP' : TangentPropModel,
+    'ATP' : AugmentedTangentPropModel,
+    'PAN' : PivotModel,
+}
+
+def pizza_models(model_name):
+    if model_name in MODELS:
+        return MODELS[model_name]
+    else:
+        raise ValueError('Unrecognized model name : {}'
+                         'Expected one from {}'. format(model_name, MODELS.keys()))
