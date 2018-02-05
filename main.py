@@ -12,7 +12,7 @@ from problem.workflow import pprint
 
 from models.mnist import mnist_models
 from models.fashion_mnist import fashion_mnist_models
-from models.higsml import higsml_models
+from models.higgsml import higsml_models
 from models.higgsuci import higgsuci_models
 
 from problem import mnist
