@@ -151,7 +151,6 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
         n_steps = self.n_steps
         
         self.jnet.reset_parameters()
-        print('CLF X SHAPE', X.shape)
         batch_gen = EpochShuffle(X, y, sample_weight, T, batch_size=batch_size)
         for i, (X_batch, y_batch, w_batch, T_batch) in enumerate(islice(batch_gen, n_steps)):
             X_batch = make_variable(X_batch, cuda=self.cuda)
