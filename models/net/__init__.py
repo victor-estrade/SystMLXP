@@ -7,3 +7,4 @@ from __future__ import unicode_literals
 from .neural_net import NeuralNetClassifier
 from .neural_net import NeuralNetRegressor
 from .tangent_prop import TangentPropClassifier
+from .pivot import PivotTrainer
