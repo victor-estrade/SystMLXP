@@ -20,7 +20,7 @@ from .architecture import Net
 from ..data_augment import NormalDataAugmenter
 
 class NeuralNetModel(BaseEstimator, ClassifierMixin):
-    def __init__(self, n_steps=5000, batch_size=20, learning_rate=1e-3, cuda=False, verbose=0):
+    def __init__(self, n_steps=5000, batch_size=128, learning_rate=1e-3, cuda=False, verbose=0):
         super().__init__()
         self.n_steps = n_steps
         self.batch_size = batch_size
@@ -38,16 +38,19 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
                                        n_steps=self.n_steps, batch_size=self.batch_size)
 
     def fit(self, X, y, sample_weight=None):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
@@ -81,7 +84,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
 
 
 class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
-    def __init__(self, skewing_function, n_steps=5000, batch_size=20, learning_rate=1e-3, width=1, n_augment=2,
+    def __init__(self, skewing_function, n_steps=5000, batch_size=128, learning_rate=1e-3, width=1, n_augment=2,
                  cuda=False, verbose=0):
         super().__init__()
         self.n_steps = n_steps
@@ -105,16 +108,19 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight = self.augmenter(X, y, sample_weight)
+        X = X.reshape(-1, 28*28)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba

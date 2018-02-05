@@ -39,7 +39,7 @@ class TangentComputer(object):
 
 
 class TangentPropModel(BaseEstimator, ClassifierMixin):
-    def __init__(self, skewing_function, n_steps=5000, batch_size=20, learning_rate=1e-3, trade_off=1, alpha=1e-2, cuda=False, verbose=0):
+    def __init__(self, skewing_function, n_steps=5000, batch_size=128, learning_rate=1e-3, trade_off=1, alpha=1e-2, cuda=False, verbose=0):
         super().__init__()
         self.skewing_function = skewing_function
         self.n_steps = n_steps
@@ -65,16 +65,19 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y, sample_weight=None):
         T = self.tangent_extractor.compute_tangent(X)
+        X = X.reshape(-1, 28*28)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
@@ -109,7 +112,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
 
 
 class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
-    def __init__(self, skewing_function, n_steps=5000, batch_size=20, learning_rate=1e-3, trade_off=1, alpha=1e-2, 
+    def __init__(self, skewing_function, n_steps=5000, batch_size=128, learning_rate=1e-3, trade_off=1, alpha=1e-2, 
                     width=1, n_augment=2, cuda=False, verbose=0):
         super().__init__()
         self.skewing_function = skewing_function
@@ -141,16 +144,19 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight = self.augmenter(X, y, sample_weight)
         T = self.tangent_extractor.compute_tangent(X)
+        X = X.reshape(-1, 28*28)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        X = X.reshape(-1, 28*28)
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
