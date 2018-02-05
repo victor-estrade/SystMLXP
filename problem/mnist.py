@@ -6,8 +6,8 @@ from __future__ import unicode_literals
 
 
 import os
-import sys
-import datetime
+# import sys
+# import datetime
 import gzip
 
 import pandas as pd
@@ -20,7 +20,7 @@ from PIL import Image
 from .download import maybe_download
 from .download import get_data_dir
 
-from .workflow import print
+from .workflow import pprint
 from .workflow import check_dir
 from .workflow import _get_save_directory
 
@@ -115,10 +115,10 @@ def train_submission(model, X, y):
         X_train = X[idx_dev]
         y_train = y[idx_dev]
         
-        print('training {}/{}...'.format(i+1, n_cv))
+        pprint('training {}/{}...'.format(i+1, n_cv))
         model.fit(X_train, y_train)
 
-        print('saving model {}/{}...'.format(i+1, n_cv))
+        pprint('saving model {}/{}...'.format(i+1, n_cv))
         model_name = '{}-{}'.format(model.get_name(), i)
         
         path = os.path.join(save_directory, model_name)
@@ -137,7 +137,7 @@ def test_submission(models, X, y, z_list=(-45, 0, +45)):
         y_test = y[idx_valid]
         res = []
         model = models[i]
-        print('testing model {}/{}'.format(i+1, n_cv))
+        pprint('testing model {}/{}'.format(i+1, n_cv))
         for z in z_list:
             X_t = skew(X_test, z=z)
             pred = model.predict(X_t)
@@ -145,5 +145,5 @@ def test_submission(models, X, y, z_list=(-45, 0, +45)):
             res.append((z, acc))
         df = pd.DataFrame(res, columns=['z', 'accuracy'])
         df_list.append(df)
-    print('Done.')
+    pprint('Done.')
     return df_list

@@ -42,9 +42,9 @@ Refactor March 2017 (V. Estrade):
 __version__ = "0.1"
 __author__ = "David Rousseau, and Victor Estrade "
 
-import sys
 import os
-import gzip
+# import sys
+# import gzip
 import copy
 
 import pandas as pd
@@ -55,7 +55,7 @@ from sklearn.model_selection import ShuffleSplit
 from .download import maybe_download
 from .download import get_data_dir
 
-from .workflow import print
+from .workflow import pprint
 from .workflow import check_dir
 from .workflow import _get_save_directory
 
@@ -643,10 +643,10 @@ def train_submission(model, data, y=None):
         X, y, W = split_data_label_weights(train_data)
         W = balance_training_weight(W, y) * y.shape[0] / 2
         
-        print('training {}/{}...'.format(i+1, n_cv))
+        pprint('training {}/{}...'.format(i+1, n_cv))
         model.fit(X, y, sample_weight=W)
 
-        print('saving model {}/{}...'.format(i+1, n_cv))
+        pprint('saving model {}/{}...'.format(i+1, n_cv))
         model_name = '{}-{}'.format(model.get_name(), i)
         
         path = os.path.join(save_directory, model_name)
@@ -680,7 +680,7 @@ def test_submission(data, models, all_sysTES=(1.0, 1.03, 1.05, 1.1) ):
         X_test, y_test, W_test = split_data_label_weights(test_data)
         
         model = models[i]
-        print('testing model {}/{}'.format(i+1, n_cv))
+        pprint('testing model {}/{}'.format(i+1, n_cv))
         run_i = build_run(model, X_test, y_test, W_test, all_sysTES, skew_function=skewing_function)
         xp.append(run_i)
     return xp
