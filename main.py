@@ -28,6 +28,8 @@ MODELS = {
         'higgs-uci': higgsuci_models,
          }
 
+ARG_MODELS = ['NN', 'ANN', 'TP', 'ATP', 'PAN',]
+
 PROBLEMS = {
         'mnist': mnist,
         'fashion-mnist': fashion_mnist,
@@ -51,7 +53,7 @@ def parse_args():
     
     # MODEL CHOICE
     parser.add_argument('model', help='model to train',
-        type=str, choices=MODELS.keys() )
+        type=str, choices=ARG_MODELS )
     
 
     # MODEL HYPER PARAMETERS
