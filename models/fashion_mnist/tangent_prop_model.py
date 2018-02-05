@@ -65,19 +65,19 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y, sample_weight=None):
         T = self.tangent_extractor.compute_tangent(X)
-        X = X.reshape(-1, 28*28)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
-        X = X.reshape(-1, 28*28)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
-        X = X.reshape(-1, 28*28)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
@@ -144,19 +144,19 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight = self.augmenter(X, y, sample_weight)
         T = self.tangent_extractor.compute_tangent(X)
-        X = X.reshape(-1, 28*28)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
-        X = X.reshape(-1, 28*28)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
-        X = X.reshape(-1, 28*28)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
