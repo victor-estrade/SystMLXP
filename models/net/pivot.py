@@ -23,7 +23,7 @@ class PivotTrainer(object):
         self.n_recovery_steps = n_recovery_steps
         self.batch_size = batch_size
         self.trade_off = trade_off
-        self.cuda = cuda
+        self.cuda_flag = cuda
 
     def partial_fit(self, X, y, z, sample_weight=None):
         if sample_weight is None:
@@ -41,10 +41,10 @@ class PivotTrainer(object):
         self.classifier.net.train() # train mode
         self.adversarial.net.train() # train mode
         for i, (X_batch, y_batch, z_batch, w_batch) in enumerate(islice(batch_gen_DR, self.n_steps)):
-            X_batch = make_variable(X_batch, cuda=self.cuda)
-            z_batch = make_variable(z_batch, cuda=self.cuda)
-            w_batch = make_variable(w_batch, cuda=self.cuda)
-            y_batch = make_variable(y_batch, cuda=self.cuda)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag)
+            z_batch = make_variable(z_batch, cuda=self.cuda_flag)
+            w_batch = make_variable(w_batch, cuda=self.cuda_flag)
+            y_batch = make_variable(y_batch, cuda=self.cuda_flag)
             self.droptimizer.zero_grad() # zero-out the gradients because they accumulate by default
             y_pred = self.classifier.net(X_batch)
             z_pred = self.adversarial.net(y_pred)
@@ -55,9 +55,9 @@ class PivotTrainer(object):
             self.droptimizer.step() # update params
 
             for j, (X_batch, z_batch, w_batch) in enumerate(islice(batch_gen_R, self.n_recovery_steps)):
-                X_batch = make_variable(X_batch, cuda=self.cuda)
-                z_batch = make_variable(z_batch, cuda=self.cuda)
-                w_batch = make_variable(w_batch, cuda=self.cuda)
+                X_batch = make_variable(X_batch, cuda=self.cuda_flag)
+                z_batch = make_variable(z_batch, cuda=self.cuda_flag)
+                w_batch = make_variable(w_batch, cuda=self.cuda_flag)
                 self.adversarial.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
                 y_pred = self.classifier.net(X_batch)
                 z_pred = self.adversarial.net(y_pred)

@@ -126,7 +126,7 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
         self.batch_size = batch_size
         self.trade_off = trade_off
         self.verbose = verbose
-        self.cuda = cuda
+        self.cuda_flag = cuda
         if cuda:
             self.cuda()
 
@@ -153,10 +153,10 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
         self.jnet.reset_parameters()
         batch_gen = EpochShuffle(X, y, sample_weight, T, batch_size=batch_size)
         for i, (X_batch, y_batch, w_batch, T_batch) in enumerate(islice(batch_gen, n_steps)):
-            X_batch = make_variable(X_batch, cuda=self.cuda)
-            T_batch = make_variable(T_batch, cuda=self.cuda)
-            w_batch = make_variable(w_batch, cuda=self.cuda)
-            y_batch = make_variable(y_batch, cuda=self.cuda)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag)
+            T_batch = make_variable(T_batch, cuda=self.cuda_flag)
+            w_batch = make_variable(w_batch, cuda=self.cuda_flag)
+            y_batch = make_variable(y_batch, cuda=self.cuda_flag)
             self.jnet.train() # train mode
             self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
             y_pred, j_pred = self.jnet(X_batch, T_batch)
@@ -180,7 +180,7 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
         self.jnet.eval()
         for X_batch in batch_gen:
             X_batch = X_batch.astype(np.float32)
-            X_batch = make_variable(X_batch, cuda=self.cuda, volatile=True)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag, volatile=True)
             out, _ = self.jnet(X_batch, X_batch)
             proba_batch = F.softmax(out, dim=1).cpu().data.numpy()
             y_proba.extend(proba_batch)

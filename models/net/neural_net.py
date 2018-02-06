@@ -29,7 +29,7 @@ class NeuralNetClassifier(BaseEstimator, ClassifierMixin):
         self.n_steps = n_steps
         self.batch_size = batch_size
         self.verbose = verbose
-        self.cuda = cuda
+        self.cuda_flag = cuda
         if cuda:
             self.cuda()
 
@@ -56,9 +56,9 @@ class NeuralNetClassifier(BaseEstimator, ClassifierMixin):
         
         batch_gen = EpochShuffle(X, y, sample_weight, batch_size=batch_size)
         for i, (X_batch, y_batch, w_batch) in enumerate(islice(batch_gen, n_steps)):
-            X_batch = make_variable(X_batch, cuda=self.cuda)
-            w_batch = make_variable(w_batch, cuda=self.cuda)
-            y_batch = make_variable(y_batch, cuda=self.cuda)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag)
+            w_batch = make_variable(w_batch, cuda=self.cuda_flag)
+            y_batch = make_variable(y_batch, cuda=self.cuda_flag)
             self.net.train() # train mode
             self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
             y_pred = self.net.forward(X_batch)
@@ -80,7 +80,7 @@ class NeuralNetClassifier(BaseEstimator, ClassifierMixin):
         self.net.eval()
         for X_batch in batch_gen:
             X_batch = X_batch.astype(np.float32)
-            X_batch = make_variable(X_batch, cuda=self.cuda, volatile=True)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag, volatile=True)
             proba_batch = F.softmax(self.net.forward(X_batch), dim=1).cpu().data.numpy()
             y_proba.extend(proba_batch)
         y_proba = np.array(y_proba)
@@ -95,7 +95,7 @@ class NeuralNetRegressor(BaseEstimator, RegressorMixin):
         self.n_steps = n_steps
         self.batch_size = batch_size
         self.verbose = verbose
-        self.cuda = cuda
+        self.cuda_flag = cuda
         if cuda:
             self.cuda()
 
@@ -123,9 +123,9 @@ class NeuralNetRegressor(BaseEstimator, RegressorMixin):
         batch_gen = EpochShuffle(X, y, sample_weight, batch_size=batch_size)
         self.net.train() # train mode
         for i, (X_batch, y_batch, w_batch) in enumerate(islice(batch_gen, n_steps)):
-            X_batch = make_variable(X_batch, cuda=self.cuda)
-            w_batch = make_variable(w_batch, cuda=self.cuda)
-            y_batch = make_variable(y_batch, cuda=self.cuda)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag)
+            w_batch = make_variable(w_batch, cuda=self.cuda_flag)
+            y_batch = make_variable(y_batch, cuda=self.cuda_flag)
             self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
             y_pred = self.net.forward(X_batch)
             loss = self.criterion(y_pred, y_batch, w_batch)
@@ -143,7 +143,7 @@ class NeuralNetRegressor(BaseEstimator, RegressorMixin):
         self.net.eval()
         for X_batch in batch_gen:
             X_batch = X_batch.astype(np.float32)
-            X_batch = make_variable(X_batch, cuda=self.cuda, volatile=True)
+            X_batch = make_variable(X_batch, cuda=self.cuda_flag, volatile=True)
             pred_batch = self.net.forward(X_batch).cpu().data.numpy()
             y_pred.extend(pred_batch)
         y_pred = np.array(y_pred)
