@@ -69,6 +69,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         
     def fit(self, X, y, sample_weight=None):
         X, z = self.perturbator.perturb(X)
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.fit_transform(X)
         self.classifier.fit(X, y, sample_weight=sample_weight)  # pre-training
         proba_pred = self.classifier.predict_proba(X)
@@ -77,11 +78,13 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         return self
     
     def predict(self, X):
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         y_pred = self.classifier.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         proba = self.classifier.predict_proba(X)
         return proba
