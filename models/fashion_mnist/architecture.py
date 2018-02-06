@@ -73,14 +73,13 @@ class JNet(nn.Module):
         self.bias4.reset_parameters()
 
 
-
 class RNet(nn.Module):
-    def __init__(self, n_in=2, n_out=1):
+    def __init__(self, n_in=10, n_out=1):
         super().__init__()
-        self.fc1 = nn.Linear(2, 120)
+        self.fc1 = nn.Linear(n_in, 120)
         self.fc2 = nn.Linear(120, 120)
         self.fc3 = nn.Linear(120, 120)
-        self.fc4 = nn.Linear(120, 1)
+        self.fc4 = nn.Linear(120, n_out)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
