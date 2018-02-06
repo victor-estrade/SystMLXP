@@ -19,16 +19,10 @@ sbatch run.sh TP --data mnist --batch-size 128 --trade-off 10.0
 sbatch run.sh TP --data mnist --batch-size 128 --trade-off 100.0
 
 
-# # Data perturbation vs width
-sbatch run.sh NNDA --data mnist --batch-size 128 --width 5
-sbatch run.sh NNDA --data mnist --batch-size 128 --width 10
-sbatch run.sh NNDA --data mnist --batch-size 128 --width 15
-
-
 # # Data augmentation vs width
-sbatch run.sh NNA --data mnist --batch-size 128 --width 5
-sbatch run.sh NNA --data mnist --batch-size 128 --width 10
-sbatch run.sh NNA --data mnist --batch-size 128 --width 15
+sbatch run.sh ANN --data mnist --batch-size 128 --width 5
+sbatch run.sh ANN --data mnist --batch-size 128 --width 10
+sbatch run.sh ANN --data mnist --batch-size 128 --width 15
 
 
 # # Pivot Adversarial Network vs trade-off
@@ -65,14 +59,10 @@ sbatch run.sh TP --data fashion-mnist --batch-size 128 --trade-off 100.0
 
 
 # Data augmentation vs width
-sbatch run.sh NNA --data fashion-mnist --batch-size 128 --width 5
-sbatch run.sh NNA --data fashion-mnist --batch-size 128 --width 10
-sbatch run.sh NNA --data fashion-mnist --batch-size 128 --width 15
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 5
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 10
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 15
 
-# Data perturbation vs width
-sbatch run.sh NNDA --data fashion-mnist --batch-size 128 --width 5
-sbatch run.sh NNDA --data fashion-mnist --batch-size 128 --width 10
-sbatch run.sh NNDA --data fashion-mnist --batch-size 128 --width 15
 
 # Pivot Adversarial Network vs trade-off
 sbatch run.sh PAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 0.0
@@ -108,15 +98,10 @@ sbatch run.sh TP --data higgs-uci --batch-size 1024 --trade-off 10.0
 sbatch run.sh TP --data higgs-uci --batch-size 1024 --trade-off 100.0
 
 
-# # Data perturbation vs width
-sbatch run.sh NNDA --data higgs-uci --batch-size 1024 --width 0.01
-sbatch run.sh NNDA --data higgs-uci --batch-size 1024 --width 0.03
-sbatch run.sh NNDA --data higgs-uci --batch-size 1024 --width 0.05
-
 # # Data augmentation vs width
-sbatch run.sh NNA --data higgs-uci --batch-size 1024 --width 0.01
-sbatch run.sh NNA --data higgs-uci --batch-size 1024 --width 0.03
-sbatch run.sh NNA --data higgs-uci --batch-size 1024 --width 0.05
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.01
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.03
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.05
 
 # # Pivot Adversarial Network vs trade-off
 sbatch run.sh PAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 0.0
@@ -152,16 +137,10 @@ sbatch run.sh TP --data higgs-geant --batch-size 1024 --trade-off 10.0
 sbatch run.sh TP --data higgs-geant --batch-size 1024 --trade-off 100.0
 
 
-# # Data perturbation vs width
-sbatch run.sh NNDA --data higgs-geant --batch-size 1024 --width 0.01
-sbatch run.sh NNDA --data higgs-geant --batch-size 1024 --width 0.03
-sbatch run.sh NNDA --data higgs-geant --batch-size 1024 --width 0.05
-
-
 # # Data augmentation vs width
-sbatch run.sh NNA --data higgs-geant --batch-size 1024 --width 0.01
-sbatch run.sh NNA --data higgs-geant --batch-size 1024 --width 0.03
-sbatch run.sh NNA --data higgs-geant --batch-size 1024 --width 0.05
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.01
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.03
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.05
 
 # # Pivot Adversarial Network vs trade-off
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.0
