@@ -152,7 +152,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
                                          trade_off=trade_off)
 
     def fit(self, X, y, sample_weight=None):
-        X, y, sample_weight = self.augmenter(X, y, sample_weight)
+        X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
         T = self.tangent_extractor.compute_tangent(X)
         if isinstance(X, pd.core.generic.NDFrame):
             X = X.values

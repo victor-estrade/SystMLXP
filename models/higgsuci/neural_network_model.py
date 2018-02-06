@@ -115,13 +115,13 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
                                        n_steps=self.n_steps, batch_size=self.batch_size)
 
     def fit(self, X, y, sample_weight=None):
+        X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
         if isinstance(X, pd.core.generic.NDFrame):
             X = X.values
         if isinstance(y, pd.core.generic.NDFrame):
             y = y.values
         if isinstance(sample_weight, pd.core.generic.NDFrame):
             sample_weight = sample_weight.values
-        X, y, sample_weight = self.augmenter(X, y, sample_weight)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
