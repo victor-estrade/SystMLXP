@@ -24,23 +24,14 @@ from ..net.weighted_criterion import WeightedMSELoss
 from .architecture import Net
 from .architecture import RNet
 from ..data_augment import NormalDataAugmenter
+from ..data_augment import NormalDataPerturbator
 
-
-class ZComputer(object):
-    def __init__(self):
-        super().__init__()
-
-    def compute_z(self, X):
-        x = X[:, 0]
-        y = X[:, 1]
-        z = np.arctan2(y, x)
-        return z
 
 
 class PivotModel(BaseEstimator, ClassifierMixin):
-    def __init__(self, n_clf_pre_training_steps=10, n_adv_pre_training_steps=10, n_steps=1000, n_recovery_steps=10,
-                 batch_size=20, classifier_learning_rate=1e-3, adversarial_learning_rate=1e-3, trade_off=1,
-                 cuda=False, verbose=0):
+    def __init__(self, skewing_function, n_clf_pre_training_steps=10, n_adv_pre_training_steps=10, n_steps=1000, 
+                 n_recovery_steps=10, batch_size=20, classifier_learning_rate=1e-3, adversarial_learning_rate=1e-3,
+                 trade_off=1, width=1, cuda=False, verbose=0):
         super().__init__()
         self.n_clf_pre_training_steps = n_clf_pre_training_steps
         self.n_adv_pre_training_steps = n_adv_pre_training_steps
@@ -50,6 +41,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         self.classifier_learning_rate = classifier_learning_rate
         self.adversarial_learning_rate = adversarial_learning_rate
         self.trade_off = trade_off
+        self.width = width
         self.cuda = cuda
         self.verbose = verbose
         
@@ -72,13 +64,13 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         self.droptimizer = optim.Adam(list(self.dnet.parameters()) + list(self.rnet.parameters()), lr=adversarial_learning_rate)
         self.pivot = PivotTrainer(self.classifier, self.adversarial, self.droptimizer,
                                  n_steps=self.n_steps, n_recovery_steps=n_recovery_steps, batch_size=batch_size,
-                                 trade_off=trade_off)
+                                 trade_off=trade_off, cuda=self.cuda)
         
-        self.zcomputer = ZComputer()
+        self.perturbator = NormalDataPerturbator(skewing_function, width=width)
         self.scaler = StandardScaler()
         
     def fit(self, X, y, sample_weight=None):
-        z = self.zcomputer.compute_z(X)
+        X, z = self.perturbator.perturb(X)
         if isinstance(X, pd.core.generic.NDFrame):
             X = X.values
         if isinstance(y, pd.core.generic.NDFrame):
@@ -87,8 +79,8 @@ class PivotModel(BaseEstimator, ClassifierMixin):
             sample_weight = sample_weight.values
         X = self.scaler.fit_transform(X)
         self.classifier.fit(X, y, sample_weight=sample_weight)  # pre-training
-        y_pred = self.classifier.predict_proba(X)
-        self.adversarial.fit(y_pred, z, sample_weight=sample_weight)  # pre-training
+        proba_pred = self.classifier.predict_proba(X)
+        self.adversarial.fit(proba_pred, z, sample_weight=sample_weight)  # pre-training
         self.pivot.partial_fit(X, y, z, sample_weight=sample_weight)
         return self
     

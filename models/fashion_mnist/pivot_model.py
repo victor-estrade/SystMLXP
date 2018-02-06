@@ -62,7 +62,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         self.droptimizer = optim.Adam(list(self.dnet.parameters()) + list(self.rnet.parameters()), lr=adversarial_learning_rate)
         self.pivot = PivotTrainer(self.classifier, self.adversarial, self.droptimizer,
                                  n_steps=self.n_steps, n_recovery_steps=n_recovery_steps, batch_size=batch_size,
-                                 trade_off=trade_off)
+                                 trade_off=trade_off, cuda=self.cuda)
         
         self.perturbator = NormalDataPerturbator(skewing_function, width=width)
         self.scaler = StandardScaler()
