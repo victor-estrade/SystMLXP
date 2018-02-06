@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import os
 
 import numpy as np
+import pandas as pd
 
 import torch
 import torch.optim as optim
@@ -65,16 +66,28 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y, sample_weight=None):
         T = self.tangent_extractor.compute_tangent(X)
+        if isinstance(X, pd.core.generic.NDFrame):
+            X = X.values
+        if isinstance(y, pd.core.generic.NDFrame):
+            y = y.values
+        if isinstance(sample_weight, pd.core.generic.NDFrame):
+            sample_weight = sample_weight.values
+        if isinstance(T, pd.core.generic.NDFrame):
+            T = T.values
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
         X = self.scaler.transform(X)
+        if isinstance(X, pd.core.generic.NDFrame):
+            X = X.values
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        if isinstance(X, pd.core.generic.NDFrame):
+            X = X.values
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
@@ -141,16 +154,28 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight = self.augmenter(X, y, sample_weight)
         T = self.tangent_extractor.compute_tangent(X)
+        if isinstance(X, pd.core.generic.NDFrame):
+            X = X.values
+        if isinstance(y, pd.core.generic.NDFrame):
+            y = y.values
+        if isinstance(sample_weight, pd.core.generic.NDFrame):
+            sample_weight = sample_weight.values
+        if isinstance(T, pd.core.generic.NDFrame):
+            T = T.values
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
+        if isinstance(X, pd.core.generic.NDFrame):
+            X = X.values
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
+        if isinstance(X, pd.core.generic.NDFrame):
+            X = X.values
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
