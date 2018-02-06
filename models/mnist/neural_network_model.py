@@ -38,20 +38,20 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
                                        n_steps=self.n_steps, batch_size=self.batch_size)
 
     def fit(self, X, y, sample_weight=None):
-        X = X.reshape(-1, 28*28)  / 255
+        X = X.reshape(-1, 28*28) / 255
         print('SHAPE', X.shape)
         X = self.scaler.fit_transform(X)
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
-        X = X.reshape(-1, 28*28)  / 255
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
-        X = X.reshape(-1, 28*28)  / 255
+        X = X.reshape(-1, 28*28) / 255
         X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
