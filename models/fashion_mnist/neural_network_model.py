@@ -35,7 +35,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         
         self.scaler = StandardScaler()
         self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 
-                                       n_steps=self.n_steps, batch_size=self.batch_size)
+                                       n_steps=self.n_steps, batch_size=self.batch_size, cuda=cuda)
 
     def fit(self, X, y, sample_weight=None):
         X = X.reshape(-1, 28*28) / 255
@@ -104,7 +104,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
 
         self.scaler = StandardScaler()
         self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 
-                                       n_steps=self.n_steps, batch_size=self.batch_size)
+                                       n_steps=self.n_steps, batch_size=self.batch_size, cuda=cuda)
 
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
