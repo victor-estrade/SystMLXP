@@ -20,9 +20,12 @@ sbatch run.sh TP --data mnist --batch-size 128 --trade-off 100.0
 
 
 # # Data augmentation vs width
-sbatch run.sh ANN --data mnist --batch-size 128 --width 5
-sbatch run.sh ANN --data mnist --batch-size 128 --width 10
-sbatch run.sh ANN --data mnist --batch-size 128 --width 15
+sbatch run.sh ANN --data mnist --batch-size 128 --width 5 --n-recovery-steps 2
+sbatch run.sh ANN --data mnist --batch-size 128 --width 5 --n-recovery-steps 5
+sbatch run.sh ANN --data mnist --batch-size 128 --width 10 --n-recovery-steps 2
+sbatch run.sh ANN --data mnist --batch-size 128 --width 10 --n-recovery-steps 5
+sbatch run.sh ANN --data mnist --batch-size 128 --width 15 --n-recovery-steps 2
+sbatch run.sh ANN --data mnist --batch-size 128 --width 15 --n-recovery-steps 5
 
 
 # # Pivot Adversarial Network vs trade-off
@@ -59,9 +62,12 @@ sbatch run.sh TP --data fashion-mnist --batch-size 128 --trade-off 100.0
 
 
 # Data augmentation vs width
-sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 5
-sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 10
-sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 15
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 5 --n-recovery-steps 2
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 5 --n-recovery-steps 5
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 10 --n-recovery-steps 2
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 10 --n-recovery-steps 5
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 15 --n-recovery-steps 2
+sbatch run.sh ANN --data fashion-mnist --batch-size 128 --width 15 --n-recovery-steps 5
 
 
 # Pivot Adversarial Network vs trade-off
@@ -99,9 +105,12 @@ sbatch run.sh TP --data higgs-uci --batch-size 1024 --trade-off 100.0
 
 
 # # Data augmentation vs width
-sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.01
-sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.03
-sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.05
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.01 --n-recovery-steps 2
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.01 --n-recovery-steps 5
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.03 --n-recovery-steps 2
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.03 --n-recovery-steps 5
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.05 --n-recovery-steps 2
+sbatch run.sh ANN --data higgs-uci --batch-size 1024 --width 0.05 --n-recovery-steps 5
 
 # # Pivot Adversarial Network vs trade-off
 sbatch run.sh PAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 0.0
@@ -125,6 +134,7 @@ sbatch run.sh PAN --data higgs-uci --batch-size 1024 --width 0.05 --trade-off 1.
 
 # # Standard Neural Net
 sbatch run.sh NN --data higgs-geant --batch-size 1024
+# sbatch -p besteffort run.sh NN --data higgs-geant --batch-size 1024
 
 
 # # Tangent Propagation vs trade-off
@@ -138,9 +148,12 @@ sbatch run.sh TP --data higgs-geant --batch-size 1024 --trade-off 100.0
 
 
 # # Data augmentation vs width
-sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.01
-sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.03
-sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.05
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.01 --n-recovery-steps 2
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.01 --n-recovery-steps 5
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.03 --n-recovery-steps 2
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.03 --n-recovery-steps 5
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.05 --n-recovery-steps 2
+sbatch run.sh ANN --data higgs-geant --batch-size 1024 --width 0.05 --n-recovery-steps 5
 
 # # Pivot Adversarial Network vs trade-off
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.0
