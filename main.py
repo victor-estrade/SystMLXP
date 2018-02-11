@@ -72,6 +72,9 @@ def parse_args():
     parser.add_argument('--n-steps', help='number of update steps',
         default=10000, type=int)
 
+    parser.add_argument('--n-augment', help='number of times the dataset is augmented',
+        default=2, type=int)
+
     parser.add_argument('--n-adv-pre-training-steps', 
         help='number of update steps for the pre-training',
         default=3000, type=int)
@@ -80,8 +83,7 @@ def parse_args():
         help='number of update steps for the pre-training',
         default=3000, type=int)
 
-
-    parser.add_argument('--n-steps-catch-training', 
+    parser.add_argument('--n-recovery-steps', 
         help='number of update steps for the catch training of auxiliary models',
         default=5, type=int)
 
