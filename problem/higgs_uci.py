@@ -590,12 +590,12 @@ def split_train_test(data, idx_train, idx_test):
     return train_data, test_data
 
 
-def skew(data, sysTauEnergyScale=1.0, remove_mass_MMC=True):
+def skew(data, z=1.0, remove_mass_MMC=True):
     data_skewed = data.copy()
     if not "DER_mass_MMC" in data_skewed.columns:
         data_skewed["DER_mass_MMC"] =  np.zeros(data.shape[0]) # Add dummy column
 
-    tau_energy_scale(data_skewed, sysTauEnergyScale)  # Modify data inplace
+    tau_energy_scale(data_skewed, z)  # Modify data inplace
     
     if remove_mass_MMC and "DER_mass_MMC" in data_skewed.columns:
         data_skewed = data_skewed.drop( ["DER_mass_MMC"], axis=1 )
@@ -605,15 +605,15 @@ def cut(data, threshold=22.0):
     data_cut = data[data['PRI_tau_pt'] > threshold]
     return data_cut
 
-def skewing_function(data, sysTauEnergyScale=1.0, remove_mass_MMC=True, threshold=22.0):
-    skewed_data = skew(data, sysTauEnergyScale=sysTauEnergyScale, remove_mass_MMC=remove_mass_MMC)
+def skewing_function(data, z=1.0, remove_mass_MMC=True, threshold=22.0):
+    skewed_data = skew(data, z=z, remove_mass_MMC=remove_mass_MMC)
     skewed_data = cut(skewed_data, threshold=threshold )
     return skewed_data
 
 def tangent(df, alpha=1e-3):
     """ The approximate formula to get the tangent. """
-    df_plus = skew(df, sysTauEnergyScale=1.0+alpha)
-    df_minus = skew(df, sysTauEnergyScale=1.0-alpha)
+    df_plus = skew(df, z=1.0+alpha)
+    df_minus = skew(df, z=1.0-alpha)
     return ( df_plus - df_minus ) / ( 2 * alpha )
 
 def balance_training_weight(w, y):
@@ -639,7 +639,7 @@ def train_submission(model, data, y=None):
 
     for i, (idx_dev, idx_valid) in enumerate(cv_iter):
         train_data, test_data =  split_train_test(data, idx_dev, idx_valid)
-        train_data = skewing_function(train_data, sysTauEnergyScale=1.0)
+        train_data = skewing_function(train_data, z=1.0)
         X, y, W = split_data_label_weights(train_data)
         W = balance_training_weight(W, y) * y.shape[0] / 2
         
@@ -659,11 +659,11 @@ def train_submission(model, data, y=None):
 def build_run(model, X, y, W, all_sysTES, skew_function):
     run = {}
     for sysTES in all_sysTES:
-        X_skew = skew_function(X, sysTauEnergyScale=sysTES)
+        X_skew = skew_function(X, z=sysTES)
         indexes = X_skew.index
         proba = model.predict_proba(X_skew)
-        n_samples_before = X.shape[0]
-        n_samples_after = X_skew.shape[0]
+        # n_samples_before = X.shape[0]
+        # n_samples_after = X_skew.shape[0]
         # W_skew = normalize_weight(W[indexes], y)
         run[sysTES] = pd.DataFrame({'decision': proba[:,1], 'Weight':W[indexes], 'Label': y[indexes]})
     return run
