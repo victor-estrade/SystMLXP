@@ -43,3 +43,15 @@ class WeightedMSELoss(nn.Module):
         element_loss = loss * weight
         loss = torch.mean(element_loss)
         return loss
+
+class WeightedL2Loss(nn.Module):
+    def forward(self, input, weight):
+        loss = torch.sum( input * input, 1) * weight
+        loss = torch.mean(loss)
+        return loss
+
+class WeightedL1Loss(nn.Module):
+    def forward(self, input, weight):
+        loss = torch.sum( torch.abs(input), 1) * weight
+        loss = torch.mean(loss)
+        return loss

@@ -117,10 +117,11 @@ class DSoftSign(nn.Module):
 
 
 class TangentPropClassifier(BaseEstimator, ClassifierMixin):
-    def __init__(self, jnet, criterion, optimizer, n_steps, batch_size, trade_off=1, cuda=False, verbose=0):
+    def __init__(self, jnet, criterion, jcriterion, optimizer, n_steps, batch_size, trade_off=1, cuda=False, verbose=0):
         super().__init__()
         self.jnet = jnet
         self.criterion = criterion
+        self.jcriterion = jcriterion
         self.optimizer = optimizer
         self.n_steps = n_steps
         self.batch_size = batch_size
@@ -133,10 +134,12 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
     def cuda(self, device=None):
         self.jnet = self.jnet.cuda(device=device)
         self.criterion = self.criterion.cuda(device=device)
+        self.jcriterion = self.jcriterion.cuda(device=device)
 
     def cpu(self):
         self.jnet = self.jnet.cpu()
         self.criterion = self.criterion.cpu()
+        self.jcriterion = self.jcriterion.cpu()
 
     def fit(self, X, y, T, sample_weight=None):
         if sample_weight is None:
@@ -161,8 +164,8 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
             self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
             y_pred, j_pred = self.jnet(X_batch, T_batch)
             loss = self.criterion(y_pred, y_batch, w_batch) 
-            jloss = torch.sum( j_pred * j_pred, 1) * w_batch
-            loss = loss + self.trade_off *  torch.mean(jloss)
+            jloss = self.jcriterion(j_pred, w_batch) 
+            loss = loss + self.trade_off * jloss
             loss.backward() # compute gradients
             self.optimizer.step() # update params
             # TODO : Call epoch hook. Compute i*batch_size/epoch to catch epoch's end

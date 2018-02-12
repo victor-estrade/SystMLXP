@@ -18,6 +18,7 @@ from sklearn.externals import joblib
 
 from ..net.tangent_prop import TangentPropClassifier
 from ..net.weighted_criterion import WeightedCrossEntropyLoss
+from ..net.weighted_criterion import WeightedL2Loss
 from ..tangent_extract import TangentExtractor
 
 from .architecture import JNet
@@ -55,12 +56,13 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+        self.jcriterion = WeightedL2Loss()
         
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
 
         self.scaler = StandardScaler()
-        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.optimizer, 
+        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 
                                          n_steps=self.n_steps, batch_size=self.batch_size,
                                          trade_off=trade_off, cuda=cuda)
 
