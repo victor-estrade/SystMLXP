@@ -18,6 +18,7 @@ from ..net.weighted_criterion import WeightedCrossEntropyLoss
 
 from .architecture import Net
 from ..data_augment import NormalDataAugmenter
+from ..monitor import LossMonitorHook
 
 class NeuralNetModel(BaseEstimator, ClassifierMixin):
     def __init__(self, n_steps=5000, batch_size=20, learning_rate=1e-3, cuda=False, verbose=0):
@@ -32,6 +33,9 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         self.learning_rate = learning_rate
         self.optimizer = optim.Adam(self.net.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+
+        self.loss_hook = LossMonitorHook()
+        self.criterion.register_forward_hook(self.loss_hook)
         
         self.scaler = StandardScaler()
         self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 
@@ -58,6 +62,9 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -69,6 +76,9 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.load_state(path)
         return self
     
     def describe(self):
@@ -96,6 +106,9 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         
         self.optimizer = optim.Adam(self.net.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+
+        self.loss_hook = LossMonitorHook()
+        self.criterion.register_forward_hook(self.loss_hook)
         
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
 
@@ -125,6 +138,9 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -136,6 +152,9 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.load_state(path)
         return self
 
     def describe(self):

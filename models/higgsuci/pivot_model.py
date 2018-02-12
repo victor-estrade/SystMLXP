@@ -25,6 +25,7 @@ from .architecture import Net
 from .architecture import RNet
 from ..data_augment import NormalDataAugmenter
 from ..data_augment import NormalDataPerturbator
+from ..monitor import LossMonitorHook
 
 
 
@@ -50,14 +51,15 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         
         self.doptimizer = optim.Adam(self.dnet.parameters(), lr=classifier_learning_rate)
         self.dcriterion = WeightedCrossEntropyLoss()
+        self.dloss_hook = LossMonitorHook()
+        self.dcriterion.register_forward_hook(self.dloss_hook)
         self.classifier = NeuralNetClassifier(self.dnet, self.dcriterion, self.doptimizer, 
                                               n_steps=n_clf_pre_training_steps, batch_size=batch_size, cuda=self.cuda)
 
         self.roptimizer = optim.Adam(self.rnet.parameters(), lr=adversarial_learning_rate)
         self.rcriterion = WeightedMSELoss()
-#         self.regressor = NeuralNetRegressor(nn.Sequential(self.dnet, self.rnet), self.dcriterion, self.doptimizer, 
-#                                               n_steps=n_adv_pre_training_steps, batch_size=batch_size, cuda=self.cuda)
-
+        self.rloss_hook = LossMonitorHook()
+        self.rcriterion.register_forward_hook(self.rloss_hook)
         self.adversarial = NeuralNetRegressor(self.rnet, self.rcriterion, self.roptimizer, 
                                               n_steps=n_adv_pre_training_steps, batch_size=batch_size, cuda=self.cuda)
         
@@ -107,6 +109,11 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'dlosses.json')
+        self.dloss_hook.save_state(path)
+        path = os.path.join(dir_path, 'rlosses.json')
+        self.rloss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -124,6 +131,11 @@ class PivotModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'dlosses.json')
+        self.dloss_hook.load_state(path)
+        path = os.path.join(dir_path, 'rlosses.json')
+        self.rloss_hook.load_state(path)
         return self
     
     def describe(self):

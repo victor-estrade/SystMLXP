@@ -23,21 +23,7 @@ from ..tangent_extract import TangentExtractor
 
 from .architecture import JNet
 from ..data_augment import NormalDataAugmenter
-
-class TangentComputer(object):
-    """ For 2D rotation """
-    def __init__(self):
-        super().__init__()
-
-    def compute_tangent(self, X):
-        """ The real formula to get the tangent. """
-        X_2 = X*X
-        rho = np.sqrt(X_2[:,0]+X_2[:,1])
-        theta = np.arctan2(X[:, 1], X[:, 0])
-        theta = theta
-        X_2[:, 0] = -rho*np.sin(theta)
-        X_2[:, 1] = rho*np.cos(theta)
-        return X_2
+from ..monitor import LossMonitorHook
 
 
 class TangentPropModel(BaseEstimator, ClassifierMixin):
@@ -56,7 +42,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+        self.loss_hook = LossMonitorHook()
+        self.criterion.register_forward_hook(self.loss_hook)
         self.jcriterion = WeightedL2Loss()
+        self.jloss_hook = LossMonitorHook()
+        self.jcriterion.register_forward_hook(self.jloss_hook)
         
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
@@ -100,6 +90,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.save_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -111,6 +106,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.load_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.load_state(path)
         return self
     
     def describe(self):
@@ -142,6 +142,11 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+        self.loss_hook = LossMonitorHook()
+        self.criterion.register_forward_hook(self.loss_hook)
+        self.jcriterion = WeightedL2Loss()
+        self.jloss_hook = LossMonitorHook()
+        self.jcriterion.register_forward_hook(self.jloss_hook)
         
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
@@ -149,7 +154,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
 
         self.scaler = StandardScaler()
-        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.optimizer, 
+        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 
                                          n_steps=self.n_steps, batch_size=self.batch_size,
                                          trade_off=trade_off, cuda=cuda)
 
@@ -188,6 +193,11 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.save_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -199,6 +209,11 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.load_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.load_state(path)
         return self
     
     def describe(self):

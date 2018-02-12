@@ -22,6 +22,7 @@ from ..tangent_extract import TangentExtractor
 
 from .architecture import JNet
 from ..data_augment import NormalDataAugmenter
+from ..monitor import LossMonitorHook
 
 class TangentComputer(object):
     """ For 2D rotation """
@@ -55,7 +56,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+        self.loss_hook = LossMonitorHook()
+        self.criterion.register_forward_hook(self.loss_hook)
         self.jcriterion = WeightedL2Loss()
+        self.jloss_hook = LossMonitorHook()
+        self.jcriterion.register_forward_hook(self.jloss_hook)
         
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
@@ -87,6 +92,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.save_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -98,6 +108,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.load_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.load_state(path)
         return self
     
     def describe(self):
@@ -129,6 +144,11 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
+        self.loss_hook = LossMonitorHook()
+        self.criterion.register_forward_hook(self.loss_hook)
+        self.jcriterion = WeightedL2Loss()
+        self.jloss_hook = LossMonitorHook()
+        self.jcriterion.register_forward_hook(self.jloss_hook)
         
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
@@ -136,7 +156,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
 
         self.scaler = StandardScaler()
-        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.optimizer, 
+        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 
                                          n_steps=self.n_steps, batch_size=self.batch_size,
                                          trade_off=trade_off, cuda=cuda)
 
@@ -163,6 +183,11 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         
         path = os.path.join(dir_path, 'Scaler.pkl')
         joblib.dump(self.scaler, path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.save_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.save_state(path)
         return self
     
     def load(self, dir_path):
@@ -174,6 +199,11 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
 
         path = os.path.join(dir_path, 'Scaler.pkl')
         self.scaler = joblib.load(path)
+
+        path = os.path.join(dir_path, 'losses.json')
+        self.loss_hook.load_state(path)
+        path = os.path.join(dir_path, 'jlosses.json')
+        self.jloss_hook.load_state(path)
         return self
     
     def describe(self):
