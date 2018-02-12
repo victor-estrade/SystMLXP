@@ -130,6 +130,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.jnet = JNet()
         
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
+        self.criterion = WeightedCrossEntropyLoss()
         self.loss_hook = LossMonitorHook()
         self.criterion.register_forward_hook(self.loss_hook)
         self.jcriterion = WeightedL2Loss()
