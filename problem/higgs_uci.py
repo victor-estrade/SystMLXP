@@ -375,7 +375,7 @@ def getDetailLabel(origWeight, Label, num=True):
         }
     # complementary for W detaillabeldict=200
     #previous alphanumeric detail label    
-    detail_lable_str={
+    detail_label_str={
        57207:"S0",
        4613:"S1",
        8145:"S2",
@@ -508,7 +508,7 @@ def tau_energy_scale(data, systTauEnergyScale):
     vltau = vlep + vtau # lep + tau
     data["DER_mass_vis"] = vltau.m()
 
-    vlmet = vlep + vmet # lep + met # Seems to be unused ?
+    vlmet = vlep + vmet # lep + met # FIXME Seems to be unused ?
     vltaumet = vltau + vmet # lep + tau + met
 
     data["DER_pt_h"] = vltaumet.pt()
@@ -683,4 +683,5 @@ def test_submission(data, models, all_sysTES=(1.0, 1.03, 1.05, 1.1) ):
         pprint('testing model {}/{}'.format(i+1, n_cv))
         run_i = build_run(model, X_test, y_test, W_test, all_sysTES, skew_function=skewing_function)
         xp.append(run_i)
+    pprint('Done.')
     return xp
