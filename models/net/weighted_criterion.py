@@ -46,12 +46,12 @@ class WeightedMSELoss(nn.Module):
 
 class WeightedL2Loss(nn.Module):
     def forward(self, input, weight):
-        loss = torch.sum( input * input, 1) * weight
+        loss = torch.sum( input * input, 1) * weight / input.size(1)
         loss = torch.mean(loss)
         return loss
 
 class WeightedL1Loss(nn.Module):
     def forward(self, input, weight):
-        loss = torch.sum( torch.abs(input), 1) * weight
+        loss = torch.sum( torch.abs(input), 1) * weight  / input.size(1)
         loss = torch.mean(loss)
         return loss
