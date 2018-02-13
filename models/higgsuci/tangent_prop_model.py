@@ -48,7 +48,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         self.jloss_hook = LossMonitorHook()
         self.jcriterion.register_forward_hook(self.jloss_hook)
         
-        self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
+        self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha, offset=1)
 #         self.tangent_extractor = TangentComputer()
 
         self.scaler = StandardScaler()
@@ -150,7 +150,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.jloss_hook = LossMonitorHook()
         self.jcriterion.register_forward_hook(self.jloss_hook)
         
-        self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
+        self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha, offset=1)
 #         self.tangent_extractor = TangentComputer()
 
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
