@@ -122,7 +122,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         self.loss_hook = LossMonitorHook()
         self.criterion.register_forward_hook(self.loss_hook)
         
-        self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
+        self.augmenter = NormalDataAugmenter(skewing_function, center=1, width=width, n_augment=n_augment)
 
         self.scaler = StandardScaler()
         self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 

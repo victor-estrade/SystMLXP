@@ -153,7 +153,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha, offset=1)
 #         self.tangent_extractor = TangentComputer()
 
-        self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
+        self.augmenter = NormalDataAugmenter(skewing_function, center=1, width=width, n_augment=n_augment)
 
         self.scaler = StandardScaler()
         self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 

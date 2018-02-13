@@ -31,7 +31,7 @@ class NormalDataAugmenter(DataAugmenter):
         z_list = [self.sample_z( size=X.shape[0] ) for _ in range(self.n_augment)]
         X = np.concatenate( [X,] + [ self.skewing_function(X, z) for z in z_list ], axis=0)
         y = np.concatenate( [y,] + [y for _ in range(self.n_augment) ], axis=0)
-        z = np.concatenate( [np.ones(X.shape[0]), ] + z_list)
+        z = np.concatenate( [np.zeros(X.shape[0]) + self.center, ] + z_list)
         if sample_weight is not None:
             W = np.concatenate( [sample_weight,] + [sample_weight for _ in range(self.n_augment) ], axis=0)
             return X, y, W, z
@@ -55,7 +55,7 @@ class NormalDataPerturbator(object):
         return X, z
     
     def __call__(self, X, y, sample_weight=None):
-        return self.perturb(X, y, sample_weight=None)
+        return self.perturb(X)
 
     def sample_z(self, size):
         z = np.random.normal( loc=self.center, scale=self.width, size=size )

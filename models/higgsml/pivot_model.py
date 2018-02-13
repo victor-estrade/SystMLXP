@@ -68,7 +68,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
                                  n_steps=self.n_steps, n_recovery_steps=n_recovery_steps, batch_size=batch_size,
                                  trade_off=trade_off, cuda=self.cuda)
         
-        self.perturbator = NormalDataPerturbator(skewing_function, width=width)
+        self.perturbator = NormalDataPerturbator(skewing_function, center=1, width=width)
         self.scaler = StandardScaler()
         
     def fit(self, X, y, sample_weight=None):
