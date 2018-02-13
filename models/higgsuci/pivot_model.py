@@ -80,6 +80,8 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         if isinstance(sample_weight, pd.core.generic.NDFrame):
             sample_weight = sample_weight.values
         X = self.scaler.fit_transform(X)
+        self.dloss_hook.reset()
+        self.rloss_hook.reset()
         self.classifier.fit(X, y, sample_weight=sample_weight)  # pre-training
         proba_pred = self.classifier.predict_proba(X)
         self.adversarial.fit(proba_pred, z, sample_weight=sample_weight)  # pre-training

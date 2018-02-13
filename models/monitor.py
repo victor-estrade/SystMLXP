@@ -18,6 +18,10 @@ class LossMonitorHook(object):
         if self.i >= self.step:
             self.losses.append(output.data[0])
             self.i = 0
+
+    def reset(self):
+        self.losses = []
+        self.i = 0
     
     def save_state(self, path):
         with open(path, 'w') as f:

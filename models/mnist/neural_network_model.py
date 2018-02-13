@@ -44,6 +44,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         X = X.reshape(-1, 28*28) / 255
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
@@ -123,6 +124,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
         X = X.reshape(-1, 28*28)  / 255
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     

@@ -67,6 +67,8 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         if isinstance(T, pd.core.generic.NDFrame):
             T = T.values
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
+        self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
@@ -170,6 +172,8 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         if isinstance(T, pd.core.generic.NDFrame):
             T = T.values
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
+        self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     

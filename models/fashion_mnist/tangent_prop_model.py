@@ -58,6 +58,8 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         X = X.reshape(-1, 28*28) / 255
         T = T.reshape(*X.shape)
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
+        self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
@@ -153,6 +155,8 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         X = X.reshape(-1, 28*28) / 255
         T = T.reshape(*X.shape)
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
+        self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     

@@ -73,6 +73,8 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         X, z = self.perturbator.perturb(X)
         X = X.reshape(-1, 28*28) / 255
         X = self.scaler.fit_transform(X)
+        self.dloss_hook.reset()
+        self.rloss_hook.reset()
         self.classifier.fit(X, y, sample_weight=sample_weight)  # pre-training
         proba_pred = self.classifier.predict_proba(X)
         self.adversarial.fit(proba_pred, z, sample_weight=sample_weight)  # pre-training

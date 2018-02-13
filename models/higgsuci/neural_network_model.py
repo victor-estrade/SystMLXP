@@ -50,6 +50,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         if isinstance(sample_weight, pd.core.generic.NDFrame):
             sample_weight = sample_weight.values
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
@@ -136,6 +137,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         if isinstance(sample_weight, pd.core.generic.NDFrame):
             sample_weight = sample_weight.values
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     

@@ -73,6 +73,8 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         T = self.tangent_extractor.compute_tangent(X)
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
+        self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     
@@ -164,6 +166,8 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
         T = self.tangent_extractor.compute_tangent(X)
         X = self.scaler.fit_transform(X)
+        self.loss_hook.reset()
+        self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
     

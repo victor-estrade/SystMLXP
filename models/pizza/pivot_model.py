@@ -81,6 +81,8 @@ class PivotModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         z = self.zcomputer.compute_z(X)
         X = self.scaler.fit_transform(X)
+        self.dloss_hook.reset()
+        self.rloss_hook.reset()
         self.classifier.fit(X, y, sample_weight=sample_weight)  # pre-training
         y_pred = self.classifier.predict_proba(X)
         self.adversarial.fit(y_pred, z, sample_weight=sample_weight)  # pre-training
