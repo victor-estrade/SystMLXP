@@ -48,7 +48,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
 
-        self.scaler = StandardScaler()
+        # self.scaler = StandardScaler()
         self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 
                                          n_steps=self.n_steps, batch_size=self.batch_size,
                                          trade_off=trade_off, cuda=cuda)
@@ -57,7 +57,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         T = self.tangent_extractor.compute_tangent(X)
         X = X.reshape(-1, 28*28) / 255
         T = T.reshape(*X.shape) / 255
-        X = self.scaler.fit_transform(X)
+        # X = self.scaler.fit_transform(X)
         self.loss_hook.reset()
         self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
@@ -65,13 +65,13 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
     
     def predict(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
 
@@ -80,7 +80,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         torch.save(self.jnet.state_dict(), path)
         
         path = os.path.join(dir_path, 'Scaler.pkl')
-        joblib.dump(self.scaler, path)
+        # joblib.dump(self.scaler, path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.save_state(path)
@@ -96,7 +96,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
             self.jnet.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
 
         path = os.path.join(dir_path, 'Scaler.pkl')
-        self.scaler = joblib.load(path)
+        # self.scaler = joblib.load(path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.load_state(path)
@@ -144,7 +144,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
 
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
 
-        self.scaler = StandardScaler()
+        # self.scaler = StandardScaler()
         self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 
                                          n_steps=self.n_steps, batch_size=self.batch_size,
                                          trade_off=trade_off, cuda=cuda)
@@ -154,7 +154,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         T = self.tangent_extractor.compute_tangent(X)
         X = X.reshape(-1, 28*28) / 255
         T = T.reshape(*X.shape) / 255
-        X = self.scaler.fit_transform(X)
+        # X = self.scaler.fit_transform(X)
         self.loss_hook.reset()
         self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
@@ -162,13 +162,13 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
     
     def predict(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
 
@@ -177,7 +177,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         torch.save(self.jnet.state_dict(), path)
         
         path = os.path.join(dir_path, 'Scaler.pkl')
-        joblib.dump(self.scaler, path)
+        # joblib.dump(self.scaler, path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.save_state(path)
@@ -193,7 +193,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
             self.jnet.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
 
         path = os.path.join(dir_path, 'Scaler.pkl')
-        self.scaler = joblib.load(path)
+        # self.scaler = joblib.load(path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.load_state(path)

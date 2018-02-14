@@ -37,26 +37,26 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         self.loss_hook = LossMonitorHook()
         self.criterion.register_forward_hook(self.loss_hook)
         
-        self.scaler = StandardScaler()
+        # self.scaler = StandardScaler()
         self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 
                                        n_steps=self.n_steps, batch_size=self.batch_size, cuda=cuda)
 
     def fit(self, X, y, sample_weight=None):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.fit_transform(X)
+        # X = self.scaler.fit_transform(X)
         self.loss_hook.reset()
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
 
@@ -65,7 +65,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         torch.save(self.net.state_dict(), path)
         
         path = os.path.join(dir_path, 'Scaler.pkl')
-        joblib.dump(self.scaler, path)
+        # joblib.dump(self.scaler, path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.save_state(path)
@@ -79,7 +79,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
             self.net.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
 
         path = os.path.join(dir_path, 'Scaler.pkl')
-        self.scaler = joblib.load(path)
+        # self.scaler = joblib.load(path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.load_state(path)
@@ -116,27 +116,27 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
 
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
 
-        self.scaler = StandardScaler()
+        # self.scaler = StandardScaler()
         self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 
                                        n_steps=self.n_steps, batch_size=self.batch_size, cuda=cuda)
 
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.fit_transform(X)
+        # X = self.scaler.fit_transform(X)
         self.loss_hook.reset()
         self.clf.fit(X, y, sample_weight=sample_weight)
         return self
     
     def predict(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
     
     def predict_proba(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
 
@@ -145,7 +145,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         torch.save(self.net.state_dict(), path)
         
         path = os.path.join(dir_path, 'Scaler.pkl')
-        joblib.dump(self.scaler, path)
+        # joblib.dump(self.scaler, path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.save_state(path)
@@ -159,7 +159,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
             self.net.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
 
         path = os.path.join(dir_path, 'Scaler.pkl')
-        self.scaler = joblib.load(path)
+        # self.scaler = joblib.load(path)
 
         path = os.path.join(dir_path, 'losses.json')
         self.loss_hook.load_state(path)

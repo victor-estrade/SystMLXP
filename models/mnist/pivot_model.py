@@ -67,12 +67,12 @@ class PivotModel(BaseEstimator, ClassifierMixin):
                                  trade_off=trade_off, cuda=self.cuda)
         
         self.perturbator = NormalDataPerturbator(skewing_function, width=width)
-        self.scaler = StandardScaler()
+        # self.scaler = StandardScaler()
         
     def fit(self, X, y, sample_weight=None):
         X, z = self.perturbator.perturb(X)
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.fit_transform(X)
+        # X = self.scaler.fit_transform(X)
         self.dloss_hook.reset()
         self.rloss_hook.reset()
         self.classifier.fit(X, y, sample_weight=sample_weight)  # pre-training
@@ -83,13 +83,13 @@ class PivotModel(BaseEstimator, ClassifierMixin):
     
     def predict(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         y_pred = self.classifier.predict(X)
         return y_pred
     
     def predict_proba(self, X):
         X = X.reshape(-1, 28*28) / 255
-        X = self.scaler.transform(X)
+        # X = self.scaler.transform(X)
         proba = self.classifier.predict_proba(X)
         return proba
 
@@ -101,7 +101,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         torch.save(self.rnet.state_dict(), path)
         
         path = os.path.join(dir_path, 'Scaler.pkl')
-        joblib.dump(self.scaler, path)
+        # joblib.dump(self.scaler, path)
 
         path = os.path.join(dir_path, 'dlosses.json')
         self.dloss_hook.save_state(path)
@@ -123,7 +123,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
             self.rnet.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
 
         path = os.path.join(dir_path, 'Scaler.pkl')
-        self.scaler = joblib.load(path)
+        # self.scaler = joblib.load(path)
 
         path = os.path.join(dir_path, 'dlosses.json')
         self.dloss_hook.load_state(path)
