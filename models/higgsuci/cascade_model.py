@@ -95,7 +95,7 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
     def predict_proba(self, X):
         score = np.zeros(X.shape[0])
         idx = self.filter_0.filter_idx(X)
-        proba = self.model_1.predict_proba(X[idx])
+        proba = self.model_1.predict_proba(X.iloc[idx].copy())
         score[idx] = proba[:, 1]
         score = score.reshape(-1, 1)
         proba = np.concatenate([1-score, score], axis=1)
