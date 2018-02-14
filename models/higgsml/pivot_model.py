@@ -145,12 +145,12 @@ class PivotModel(BaseEstimator, ClassifierMixin):
                     n_adv_pre_training_steps=self.n_adv_pre_training_steps, n_steps=self.n_steps,
                     n_recovery_steps=self.n_recovery_steps, classifier_learning_rate=self.classifier_learning_rate, 
                     batch_size=self.batch_size,
-                    adversarial_learning_rate=self.adversarial_learning_rate, trade_off=self.trade_off,
+                    adversarial_learning_rate=self.adversarial_learning_rate, trade_off=self.trade_off, width=self.width,
                     )
 
     def get_name(self):
-        name = "PivotModel-{}-{}-{}-{}-{}-{}-{}-{}".format(self.n_clf_pre_training_steps, self.n_adv_pre_training_steps, 
+        name = "PivotModel-{}-{}-{}-{}-{}-{}-{}-{}-{}".format(self.n_clf_pre_training_steps, self.n_adv_pre_training_steps, 
                     self.n_steps, self.n_recovery_steps, self.classifier_learning_rate, self.batch_size,
-                    self.adversarial_learning_rate, self.trade_off,
+                    self.adversarial_learning_rate, self.trade_off, self.width,
                     )
         return name
