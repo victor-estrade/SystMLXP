@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import os
 import numpy as np
+import pandas as pd
 
 import torch
 
@@ -27,6 +28,8 @@ class Filter(object):
         self.score_threshold = 0
 
     def fit(self, X, y):
+        if isinstance(y, pd.core.generic.NDFrame):
+            y = y.values
         proba = self.clf.predict_proba(X)
         clf_score = proba[:, 1]
         idx = np.argsort(clf_score)
