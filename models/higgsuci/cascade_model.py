@@ -20,6 +20,10 @@ def filter_arrays(idx, *arrays):
     filtered_arrays = tuple(arr[idx] if arr is not None else None for arr in arrays)
     return filtered_arrays
 
+def filter_pandarrays(idx, *arrays):
+    filtered_arrays = tuple(arr.loc[idx] if arr is not None else None for arr in arrays)
+    return filtered_arrays
+
 class Filter(object):
     def __init__(self, clf, fraction_signal_to_keep=0.95):
         super().__init__()
@@ -47,7 +51,7 @@ class Filter(object):
 
     def filter(self, X, *arrays):
         idx =  self.filter_idx( X )
-        return filter_arrays( idx, X, *arrays )
+        return filter_pandarrays( idx, X, *arrays )
 
     def __call__(self, X, *arrays):
         return self.filter(X, *arrays)
