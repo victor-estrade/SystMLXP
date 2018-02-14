@@ -20,9 +20,9 @@ def filter_arrays(idx, *arrays):
     filtered_arrays = tuple(arr[idx] if arr is not None else None for arr in arrays)
     return filtered_arrays
 
-def filter_pandarrays(idx, *arrays):
-    filtered_arrays = tuple(arr.loc[idx] if arr is not None else None for arr in arrays)
-    return filtered_arrays
+def filter_pandarrays(idx, *dataframes):
+    filtered_df = tuple(df.iloc[idx].copy() if df is not None else None for df in dataframes)
+    return filtered_df
 
 class Filter(object):
     def __init__(self, clf, fraction_signal_to_keep=0.95):
