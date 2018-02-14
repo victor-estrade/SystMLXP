@@ -6,6 +6,27 @@ from __future__ import unicode_literals
 
 import json
 
+
+class LightLossMonitorHook(object):
+    def __init__(self):
+        super().__init__()
+        self.losses = []
+    
+    def __call__(self, module, input, output):
+        self.losses.append(output.data[0])
+
+    def reset(self):
+        self.losses = []
+    
+    def save_state(self, path):
+        with open(path, 'w') as f:
+            json.dump(self.losses, f)
+
+    def load_state(self, path):
+        with open(path, 'r') as f:
+            self.losses = json.load(f)
+
+
 class LossMonitorHook(object):
     def __init__(self, step=1):
         super().__init__()
@@ -37,3 +58,5 @@ class LossMonitorHook(object):
             self.losses = data['losses']
             self.step = data['step']
             self.i = data['i']
+
+
