@@ -102,40 +102,21 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
         return proba
 
     def save(self, dir_path):
-        path = os.path.join(dir_path, 'weights_0.pth')
-        torch.save(self.net_0.state_dict(), path)
-        path = os.path.join(dir_path, 'weights_1.pth')
-        torch.save(self.net_1.state_dict(), path)
-        
-        path = os.path.join(dir_path, 'Scaler.pkl')
-        joblib.dump(self.scaler, path)
+        path = os.path.join(dir_path, 'model_0')
+        os.mkdir(path)
+        self.model_0.save(path)
 
-        path = os.path.join(dir_path, 'losses_0.json')
-        self.loss_hook_0.save_state(path)
-        path = os.path.join(dir_path, 'losses_1.json')
-        self.loss_hook_1.save_state(path)
+        path = os.path.join(dir_path, 'model_1')
+        os.mkdir(path)
+        self.model_1.save(path)
         return self
     
     def load(self, dir_path):
-        path = os.path.join(dir_path, 'weights_0.pth')
-        if self.cuda:
-            self.net_0.load_state_dict(torch.load(path))
-        else:
-            self.net_0.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
+        path = os.path.join(dir_path, 'model_0')
+        self.model_0.load(path)
 
-        path = os.path.join(dir_path, 'weights_1.pth')
-        if self.cuda:
-            self.net_1.load_state_dict(torch.load(path))
-        else:
-            self.net_1.load_state_dict(torch.load(path, map_location=lambda storage, loc: storage))
-
-        path = os.path.join(dir_path, 'Scaler.pkl')
-        self.scaler = joblib.load(path)
-
-        path = os.path.join(dir_path, 'losses_0.json')
-        self.loss_hook_0.load_state(path)
-        path = os.path.join(dir_path, 'losses_1.json')
-        self.loss_hook_1.load_state(path)
+        path = os.path.join(dir_path, 'model_1')
+        self.model_1.load(path)
         return self
     
     def describe(self):
