@@ -8,10 +8,7 @@ import os
 import numpy as np
 import pandas as pd
 
-import torch
-
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.externals import joblib
 
 from .neural_network_model import NeuralNetModel
 
