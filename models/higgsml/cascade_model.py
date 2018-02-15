@@ -57,14 +57,16 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
 
     def save(self, dir_path):
         path = os.path.join(dir_path, 'model_0')
-        os.mkdir(path)
+        if not os.isdir(path):
+            os.mkdir(path)
         self.model_0.save(path)
 
         path = os.path.join(dir_path, 'filter_0.json')
         self.filter_0.save_state(path)
 
         path = os.path.join(dir_path, 'model_1')
-        os.mkdir(path)
+        if not os.isdir(path):
+            os.mkdir(path)
         self.model_1.save(path)
         return self
     
