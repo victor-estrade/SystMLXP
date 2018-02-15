@@ -38,7 +38,7 @@ class ClassifierFilter(object):
         else:
             fraction_signals_kept = np.cumsum(y[idx]) / np.sum(y)
         i = np.searchsorted(fraction_signals_kept, 1-self.fraction_signal_to_keep)
-        self.score_threshold_ = clf_score[idx[i]]
+        self.score_threshold_ = float(clf_score[idx[i]])
         return self
 
     def filter_idx(self, X):
