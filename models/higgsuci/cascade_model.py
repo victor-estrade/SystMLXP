@@ -5,65 +5,12 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import os
-import json
 import numpy as np
-import pandas as pd
 
 from sklearn.base import BaseEstimator, ClassifierMixin
 
 from .neural_network_model import NeuralNetModel
-
-
-def filter_arrays(idx, *arrays):
-    filtered_arrays = tuple(arr[idx] if arr is not None else None for arr in arrays)
-    return filtered_arrays
-
-def filter_pandarrays(idx, *dataframes):
-    filtered_df = tuple(df.iloc[idx].copy() if df is not None else None for df in dataframes)
-    return filtered_df
-
-class Filter(object):
-    def __init__(self, clf, fraction_signal_to_keep=0.95):
-        super().__init__()
-        self.clf = clf
-        self.fraction_signal_to_keep =  fraction_signal_to_keep
-        self.score_threshold_ = 0
-
-    def fit(self, X, y):
-        if isinstance(y, pd.core.generic.NDFrame):
-            y = y.values
-        proba = self.clf.predict_proba(X)
-        clf_score = proba[:, 1]
-        idx = np.argsort(clf_score)
-        fraction_signals_kept = np.cumsum(y[idx]) / np.sum(y)
-        i = np.searchsorted(fraction_signals_kept, 1-self.fraction_signal_to_keep)
-        self.score_threshold_ = clf_score[idx[i]]
-        return self
-
-    def filter_idx(self, X):
-        proba = self.clf.predict_proba(X)
-        clf_score = proba[:, 1]
-        idx = np.argsort(clf_score)
-        i = np.searchsorted(clf_score[idx], self.score_threshold_)
-        return idx[i:]
-
-    def filter(self, X, *arrays):
-        idx =  self.filter_idx( X )
-        return filter_pandarrays( idx, X, *arrays )
-
-    def __call__(self, X, *arrays):
-        return self.filter(X, *arrays)
-
-    def save_state(self, path):
-        with open(path, 'w') as f:
-            data = dict(score_threshold=self.score_threshold_, 
-                       )
-            json.dump(data, f)
-
-    def load_state(self, path):
-        with open(path, 'r') as f:
-            data = json.load(f)
-            self.score_threshold_ = data['score_threshold']
+from ..classifier_filter import ClassifierFilter
 
 
 class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
@@ -79,17 +26,15 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
         
         self.model_0 = NeuralNetModel(n_steps=n_steps, batch_size=batch_size, learning_rate=learning_rate,
                                       cuda=cuda, verbose=verbose)
-        self.filter_0 = Filter(self.model_0, fraction_signal_to_keep=self.fraction_signal_to_keep)
+        self.filter_0 = ClassifierFilter(self.model_0, fraction_signal_to_keep=self.fraction_signal_to_keep)
 
         self.model_1 = NeuralNetModel(n_steps=n_steps, batch_size=batch_size, learning_rate=learning_rate,
                                       cuda=cuda, verbose=verbose)
 
     def fit(self, X, y, sample_weight=None):
         self.model_0.fit(X, y, sample_weight=sample_weight)
-        # Select samples keeping 95% signals
         # TODO : select on training or validation ?
         # -> training for now, but validation feels more accurate.
-        # TODO Have another class doing the filtering feels cleaner
         self.filter_0.fit(X, y)
         X_, y_, sample_weight_ = self.filter_0.filter(X, y, sample_weight)
 
