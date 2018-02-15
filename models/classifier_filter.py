@@ -31,7 +31,12 @@ class ClassifierFilter(object):
         proba = self.clf.predict_proba(X)
         clf_score = proba[:, 1]
         idx = np.argsort(clf_score)
-        fraction_signals_kept = np.cumsum(y[idx]) / np.sum(y)
+        if sample_weight is not None:
+            if isinstance(sample_weight, pd.core.generic.NDFrame):
+                sample_weight = sample_weight.values
+            fraction_signals_kept = np.cumsum(sample_weight[idx] * y[idx]) / np.sum(sample_weight * y)
+        else:
+            fraction_signals_kept = np.cumsum(y[idx]) / np.sum(y)
         i = np.searchsorted(fraction_signals_kept, 1-self.fraction_signal_to_keep)
         self.score_threshold_ = clf_score[idx[i]]
         return self

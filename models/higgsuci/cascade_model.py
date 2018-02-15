@@ -35,7 +35,7 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
         self.model_0.fit(X, y, sample_weight=sample_weight)
         # TODO : select on training or validation ?
         # -> training for now, but validation feels more accurate.
-        self.filter_0.fit(X, y)
+        self.filter_0.fit(X, y, sample_weight)
         X_, y_, sample_weight_ = self.filter_0.filter(X, y, sample_weight)
 
         self.model_1.fit(X_, y_, sample_weight=sample_weight_)
