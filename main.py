@@ -87,6 +87,11 @@ def parse_args():
         help='number of update steps for the catch training of auxiliary models',
         default=5, type=int)
 
+    parser.add_argument('--fraction-signal-to-keep', 
+        help='fraction of signal to keep in Filters',
+        default=0.95, type=float)
+
+
     # OTHER
     parser.add_argument('--no-cuda', '--no-gpu', help='flag to use or not the gpu',
         action='store_false', dest='cuda')
