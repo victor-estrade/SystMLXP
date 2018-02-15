@@ -118,9 +118,9 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
     
     def describe(self):
         return dict(name='cascade_neural_net', learning_rate=self.learning_rate, 
-                    n_steps=self.n_steps, batch_size=self.batch_size)
+                    n_steps=self.n_steps, batch_size=self.batch_size, fraction_signal_to_keep=self.fraction_signal_to_keep)
         
     def get_name(self):
-        name = "CascadeNeuralNetModel-{}-{}-{}".format(self.n_steps, self.batch_size, self.learning_rate)
+        name = "CascadeNeuralNetModel-{}-{}-{}-{}".format(self.n_steps, self.batch_size, self.learning_rate, self.fraction_signal_to_keep)
         return name
 
