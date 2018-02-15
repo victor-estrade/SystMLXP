@@ -13,6 +13,7 @@ from .tangent_prop_model import AugmentedTangentPropModel
 
 from .pivot_model import PivotModel
 
+from .cascade_model import CascadeNeuralNetModel
 
 MODELS = {
     'NN' : NeuralNetModel,
@@ -20,6 +21,7 @@ MODELS = {
     'TP' : TangentPropModel,
     'ATP' : AugmentedTangentPropModel,
     'PAN' : PivotModel,
+    'NNC' : CascadeNeuralNetModel,
 }
 
 def higsml_models(model_name):
