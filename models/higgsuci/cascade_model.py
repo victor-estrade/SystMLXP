@@ -5,6 +5,7 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import os
+import json
 import numpy as np
 import pandas as pd
 
@@ -26,7 +27,7 @@ class Filter(object):
         super().__init__()
         self.clf = clf
         self.fraction_signal_to_keep =  fraction_signal_to_keep
-        self.score_threshold = 0
+        self.score_threshold_ = 0
 
     def fit(self, X, y):
         if isinstance(y, pd.core.generic.NDFrame):
@@ -36,14 +37,14 @@ class Filter(object):
         idx = np.argsort(clf_score)
         fraction_signals_kept = np.cumsum(y[idx]) / np.sum(y)
         i = np.searchsorted(fraction_signals_kept, 1-self.fraction_signal_to_keep)
-        self.score_threshold = clf_score[idx[i]]
+        self.score_threshold_ = clf_score[idx[i]]
         return self
 
     def filter_idx(self, X):
         proba = self.clf.predict_proba(X)
         clf_score = proba[:, 1]
         idx = np.argsort(clf_score)
-        i = np.searchsorted(clf_score[idx], self.score_threshold)
+        i = np.searchsorted(clf_score[idx], self.score_threshold_)
         return idx[i:]
 
     def filter(self, X, *arrays):
@@ -52,6 +53,17 @@ class Filter(object):
 
     def __call__(self, X, *arrays):
         return self.filter(X, *arrays)
+
+    def save_state(self, path):
+        with open(path, 'w') as f:
+            data = dict(score_threshold=self.score_threshold_, 
+                       )
+            json.dump(data, f)
+
+    def load_state(self, path):
+        with open(path, 'r') as f:
+            data = json.load(f)
+            self.score_threshold_ = data['score_threshold']
 
 
 class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
@@ -103,6 +115,9 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
         os.mkdir(path)
         self.model_0.save(path)
 
+        path = os.path.join(dir_path, 'filter_0.json')
+        self.filter_0.save_state(path)
+
         path = os.path.join(dir_path, 'model_1')
         os.mkdir(path)
         self.model_1.save(path)
@@ -111,6 +126,9 @@ class CascadeNeuralNetModel(BaseEstimator, ClassifierMixin):
     def load(self, dir_path):
         path = os.path.join(dir_path, 'model_0')
         self.model_0.load(path)
+
+        path = os.path.join(dir_path, 'filter_0.json')
+        self.filter_0.load_state(path)
 
         path = os.path.join(dir_path, 'model_1')
         self.model_1.load(path)
