@@ -73,6 +73,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         
     def fit(self, X, y, sample_weight=None):
         X, z = self.perturbator.perturb(X)
+        z = (z - 1) / self.width
         if isinstance(X, pd.core.generic.NDFrame):
             X = X.values
         if isinstance(y, pd.core.generic.NDFrame):
