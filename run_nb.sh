@@ -28,7 +28,7 @@ source activate py35
 WORKDIR="/home/tao/${USER}/workspace/SystML/SystMLXP"
 cd $WORKDIR
 
-jupyter nbconvert --to notebook --execute $1 --output $1
+jupyter nbconvert --ExecutePreprocessor.timeout=900 --to notebook --execute $1 --output $1
 
 echo "DONE"
 date
