@@ -141,9 +141,9 @@ def test_submission(models, X, y, z_list=(-45, 0, +45)):
         for z in z_list:
             X_t = skew(X_test, z=z)
             pred = model.predict(X_t)
-            acc = accuracy_score(y_test, pred)
-            res.append((z, acc))
-        df = pd.DataFrame(res, columns=['z', 'accuracy'])
+            error = 1 - accuracy_score(y_test, pred)
+            res.append((z, error))
+        df = pd.DataFrame(res, columns=['z', 'error'])
         df_list.append(df)
     pprint('Done.')
     return df_list
