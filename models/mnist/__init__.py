@@ -12,6 +12,7 @@ from .tangent_prop_model import TangentPropModel
 from .tangent_prop_model import AugmentedTangentPropModel
 
 from .pivot_model import PivotModel
+from .pivot_model import AugmentedPivotModel
 
 
 MODELS = {
@@ -20,6 +21,7 @@ MODELS = {
     'TP' : TangentPropModel,
     'ATP' : AugmentedTangentPropModel,
     'PAN' : PivotModel,
+    'APAN' : AugmentedPivotModel,
 }
 
 def mnist_models(model_name):

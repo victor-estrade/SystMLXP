@@ -28,7 +28,7 @@ MODELS = {
         'higgs-uci': higgsuci_models,
          }
 
-ARG_MODELS = ['NN', 'ANN', 'TP', 'ATP', 'PAN', 'NNC']
+ARG_MODELS = ['NN', 'ANN', 'TP', 'ATP', 'PAN', 'APAN', 'NNC']
 
 PROBLEMS = {
         'mnist': mnist,

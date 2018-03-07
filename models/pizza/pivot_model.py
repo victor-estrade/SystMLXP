@@ -22,7 +22,7 @@ from ..net.weighted_criterion import WeightedMSELoss
 
 from .architecture import Net
 from .architecture import RNet
-from ..data_augment import NormalDataAugmenter
+# from ..data_augment import NormalDataAugmenter
 from ..monitor import LossMonitorHook
 
 

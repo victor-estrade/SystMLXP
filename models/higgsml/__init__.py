@@ -12,6 +12,7 @@ from .tangent_prop_model import TangentPropModel
 from .tangent_prop_model import AugmentedTangentPropModel
 
 from .pivot_model import PivotModel
+from .pivot_model import AugmentedPivotModel
 
 from .cascade_model import CascadeNeuralNetModel
 
@@ -21,6 +22,7 @@ MODELS = {
     'TP' : TangentPropModel,
     'ATP' : AugmentedTangentPropModel,
     'PAN' : PivotModel,
+    'APAN' : AugmentedPivotModel,
     'NNC' : CascadeNeuralNetModel,
 }
 

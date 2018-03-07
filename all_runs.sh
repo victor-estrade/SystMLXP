@@ -43,6 +43,15 @@ sbatch -p besteffort run.sh PAN --data mnist --batch-size 128 --width 5 --trade-
 sbatch -p besteffort run.sh PAN --data mnist --batch-size 128 --width 10 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data mnist --batch-size 128 --width 15 --trade-off 1.0
 
+# # Augmented Pivot Adversarial Network vs trade-off
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 0.0
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 0.001
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 0.01
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 0.1
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 1.0
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 10.0
+sbatch -p besteffort run.sh APAN --data mnist --batch-size 128 --width 5 --trade-off 100.0
+
 # ============================================================================
 #	FASHION MNIST
 # ============================================================================
@@ -84,6 +93,15 @@ sbatch -p besteffort run.sh PAN --data fashion-mnist --batch-size 128 --width 5 
 sbatch -p besteffort run.sh PAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data fashion-mnist --batch-size 128 --width 10 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data fashion-mnist --batch-size 128 --width 15 --trade-off 1.0
+
+# Augmented Pivot Adversarial Network vs trade-off
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 0.0
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 0.001
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 0.01
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 0.1
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 1.0
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 10.0
+sbatch -p besteffort run.sh APAN --data fashion-mnist --batch-size 128 --width 5 --trade-off 100.0
 
 
 # ============================================================================
@@ -127,6 +145,20 @@ sbatch -p besteffort run.sh PAN --data higgs-uci --batch-size 1024 --width 0.01 
 sbatch -p besteffort run.sh PAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data higgs-uci --batch-size 1024 --width 0.05 --trade-off 1.0
 
+# # Augmented Pivot Adversarial Network vs trade-off
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 0.0
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 0.001
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 0.01
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 0.1
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 1.0
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 10.0
+sbatch -p besteffort run.sh APAN --data higgs-uci --batch-size 1024 --width 0.03 --trade-off 100.0
+
+# # Cascade Neural Net
+sbatch -p besteffort run.sh NNC --data higgs-uci --batch-size 1024 --fraction-signal-to-keep 0.95
+sbatch -p besteffort run.sh NNC --data higgs-uci --batch-size 1024 --fraction-signal-to-keep 0.75
+sbatch -p besteffort run.sh NNC --data higgs-uci --batch-size 1024 --fraction-signal-to-keep 0.5
+
 
 # ============================================================================
 #	HIGGS GEANT 4
@@ -163,8 +195,22 @@ sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 10.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 100.0
 
-
 # # Pivot Adversarial Network vs width
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.01 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 1.0
+
+# # Augmented Pivot Adversarial Network vs trade-off
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.0
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.001
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.01
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.1
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 1.0
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 10.0
+sbatch -p besteffort run.sh APAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 100.0
+
+
+# # Cascade Neural Net
+sbatch -p besteffort run.sh NNC --data higgs-geant --batch-size 1024 --fraction-signal-to-keep 0.95
+sbatch -p besteffort run.sh NNC --data higgs-geant --batch-size 1024 --fraction-signal-to-keep 0.75
+sbatch -p besteffort run.sh NNC --data higgs-geant --batch-size 1024 --fraction-signal-to-keep 0.5
