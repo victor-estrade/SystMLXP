@@ -29,13 +29,13 @@ class NormalDataAugmenter(DataAugmenter):
     
     def augment(self, X, y, sample_weight=None):
         z_list = [self.sample_z( size=X.shape[0] ) for _ in range(self.n_augment)]
-        X = np.concatenate( [X,] + [ self.skewing_function(X, z) for z in z_list ], axis=0)
-        y = np.concatenate( [y,] + [y for _ in range(self.n_augment) ], axis=0)
-        z = np.concatenate( [np.zeros(X.shape[0]) + self.center, ] + z_list)
+        X_aug = np.concatenate( [X,] + [ self.skewing_function(X, z) for z in z_list ], axis=0)
+        y_aug = np.concatenate( [y,] + [y for _ in range(self.n_augment) ], axis=0)
+        z_aug = np.concatenate( [np.zeros(X.shape[0]) + self.center, ] + z_list)
+        w_aug = None
         if sample_weight is not None:
-            W = np.concatenate( [sample_weight,] + [sample_weight for _ in range(self.n_augment) ], axis=0)
-            return X, y, W, z
-        return X, y, sample_weight, z
+            w_aug = np.concatenate( [sample_weight,] + [sample_weight for _ in range(self.n_augment) ], axis=0)
+        return X_aug, y_aug, w_aug, z_aug
 
     def sample_z(self, size):
         z = np.random.normal( loc=self.center, scale=self.width, size=size )
