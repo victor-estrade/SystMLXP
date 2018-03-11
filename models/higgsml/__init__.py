@@ -16,6 +16,8 @@ from .pivot_model import AugmentedPivotModel
 
 from .cascade_model import CascadeNeuralNetModel
 
+from .gradient_boost import GradientBoostingModel
+
 MODELS = {
     'NN' : NeuralNetModel,
     'ANN' : AugmentedNeuralNetModel,
@@ -24,6 +26,7 @@ MODELS = {
     'PAN' : PivotModel,
     'APAN' : AugmentedPivotModel,
     'NNC' : CascadeNeuralNetModel,
+    'GB' : GradientBoostingModel,
 }
 
 def higsml_models(model_name):
