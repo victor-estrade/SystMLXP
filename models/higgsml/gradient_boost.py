@@ -43,7 +43,6 @@ class GradientBoostingModel(BaseEstimator, ClassifierMixin):
     def predict_proba(self, X):
         if isinstance(X, pd.core.generic.NDFrame):
             X = X.values
-        X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
 
