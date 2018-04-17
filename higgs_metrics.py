@@ -2,7 +2,7 @@
 from __future__ import division
 from __future__ import print_function
 from __future__ import absolute_import
-import pandas as pd
+
 import numpy as np
 
 from merging import merge_abscisse_fill_idx
@@ -25,21 +25,23 @@ def sort_decision_y_W(decision, y_true, weights):
     sorted_weights = weights[idx]
     return sorted_decision, sorted_y_true, sorted_weights
 
+
 def merge_abscisse(*abscisses):
     """
     Merge the given abscisses.
     TODO : improve explaination
-    
+
     Returns merged_abscisse, indexes
     -------
         merged_abscisse : (numpy.array) merged abscisses
         indexes : (list of numpy.array) a list of indexes.
-            Each element of the list gives the indexes to extrapolate values using the right side following each given abscisse
+            Each element of the list gives the indexes to extrapolate values
+            using the right side following each given abscisse
     """
     INT = np.int
     FLOAT = np.float
     n_abscisses = len(abscisses)
-    if n_abscisses < 2 :
+    if n_abscisses < 2:
         raise ValueError('Need at least 2 abscisse arrays to merge : {} given'.format(n_abscisses))
     concat_abscisse = np.concatenate(abscisses, axis=0)
     merged_abscisse = np.unique(concat_abscisse)
@@ -58,7 +60,7 @@ def bining(abscisse, n_bin, min_value=0., max_value=1.0):
     idx = np.empty(n_bin, dtype=np.int32)
     j = 0
     for i in range(abscisse.shape[0]):
-        if j < n_bin-1 and bins[j] < abscisse[i]:
+        if j < n_bin - 1 and bins[j] < abscisse[i]:
             idx[j] = i
             j += 1
     while j < n_bin:
@@ -71,7 +73,7 @@ def integrated_true_positive_rate(sorted_y_true, sorted_weights, positive_label=
     """
     Integration from right to left.
     """
-    weighted_true_positive_rate = (sorted_y_true==positive_label)*sorted_weights
+    weighted_true_positive_rate = (sorted_y_true == positive_label) * sorted_weights
     return np.cumsum(weighted_true_positive_rate[::-1])[::-1]
 
 
@@ -79,7 +81,7 @@ def integrated_false_positive_rate(sorted_y_true, sorted_weights, negative_label
     """
     Integration from right to left.
     """
-    weighted_false_positive_rate = (sorted_y_true==negative_label)*sorted_weights
+    weighted_false_positive_rate = (sorted_y_true == negative_label) * sorted_weights
     return np.cumsum(weighted_false_positive_rate[::-1])[::-1]
 
 
@@ -92,6 +94,7 @@ def AMS3(true_positive_rate, false_positive_rate):
     """
     return true_positive_rate / np.sqrt( false_positive_rate)
 
+
 def AMS2(true_positive_rate, false_positive_rate):
     """
     Computes the AMS2 $\sqrt{ 2 \left ( (s+b) ln (1 + \frac{s}{b}) - s \right ) }$
@@ -101,7 +104,8 @@ def AMS2(true_positive_rate, false_positive_rate):
     """
     s = true_positive_rate
     b = false_positive_rate
-    return np.sqrt( 2 * ( (s+b) * np.log( 1 + s / b ) - s ) )
+    return np.sqrt( 2 * ( (s + b) * np.log( 1 + s / b ) - s ) )
+
 
 def AMS1(true_positive_rate, false_positive_rate, false_positive_rate_z):
     """
@@ -114,8 +118,9 @@ def AMS1(true_positive_rate, false_positive_rate, false_positive_rate_z):
     s = true_positive_rate
     b = false_positive_rate
     sigma_b = np.abs(false_positive_rate_z - false_positive_rate) + 1e-7
-    b_0 = 0.5 * ( b - sigma_b**2 + np.sqrt( (b - sigma_b**2)**2 + 4 * (s+b) * (sigma_b**2) ) )
-    return np.sqrt( 2 * ( (s+b) * np.log( (s + b)/b_0 ) - s - b + b_0 ) + ( ( b - b_0 ) / sigma_b )**2 )
+    b_0 = 0.5 * ( b - sigma_b**2 + np.sqrt( (b - sigma_b**2)**2 + 4 * (s + b) * (sigma_b**2) ) )
+    return np.sqrt( 2 * ( (s + b) * np.log( (s + b) / b_0 ) - s - b + b_0 ) + ( ( b - b_0 ) / sigma_b )**2 )
+
 
 def error_stat(true_positive_rate, false_positive_rate):
     """
@@ -128,11 +133,12 @@ def error_stat(true_positive_rate, false_positive_rate):
     with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
         res = np.true_divide( np.sqrt( true_positive_rate + false_positive_rate ), true_positive_rate )
         # Replace inf values with arbitrary value
-        # The value should not be the min or max. 
+        # The value should not be the min or max.
         # Choose mean because it is fast to compute.
         res[res == np.inf] = np.mean(res)
         res = np.nan_to_num(res)
     return res
+
 
 def error_syst(s, b, s0, b0):
     """
@@ -156,11 +162,12 @@ def error_syst(s, b, s0, b0):
     with np.errstate(divide='ignore', invalid='ignore', over='ignore'):
         tmp = np.true_divide( ( s + b - b0 ), s0 )
         # Replace inf values with arbitrary value
-        # The value should not be the min or max. 
+        # The value should not be the min or max.
         # Choose mean because it is fast to compute.
         tmp[tmp == np.inf] = np.mean(tmp)
         tmp = np.nan_to_num(tmp)
     return np.abs( tmp - 1 )
+
 
 def sigma_mu(s, b, s0, b0):
     """
@@ -179,4 +186,4 @@ def sigma_mu(s, b, s0, b0):
     ------
         sigma_mu : (numpy array) the sigma_mu values
     """
-    return np.sqrt( error_stat(s0, b0)**2 + error_syst(s,b,s0,b0)**2 )
+    return np.sqrt( error_stat(s0, b0)**2 + error_syst(s, b, s0, b0)**2 )

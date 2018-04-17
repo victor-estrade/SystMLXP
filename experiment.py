@@ -102,12 +102,14 @@ def merge_metrics_decision(metrics):
         result.append(new)
     return result
 
+
 def merge_decision_xp(xp):
     all_df = merge_metrics_decision([df for run in xp for df in run.values() ])
     idx = np.cumsum([0] + [len(run.values()) for run in xp])
-    new_xp = [{ sysTES : df for sysTES, df in zip(run.keys(), all_df[start:stop]) } 
+    new_xp = [{ sysTES: df for sysTES, df in zip(run.keys(), all_df[start:stop]) }
               for run, start, stop in zip( xp, idx[:-1], idx[1:] ) ]
     return new_xp
+
 
 def systematic_metrics(base_metrics, base_metrics_training):
     # TODO add more metrics ?
@@ -120,8 +122,9 @@ def systematic_metrics(base_metrics, base_metrics_training):
     base_metrics['AMS1'] = AMS1(s_0, b_0, b)
     return base_metrics
 
+
 def systematic_run(run, training_TES):
-    systematic_run = {sysTES: systematic_metrics(df, run[training_TES]) 
+    systematic_run = {sysTES: systematic_metrics(df, run[training_TES])
                 for sysTES, df in run.items()}
     return systematic_run
 
@@ -136,19 +139,20 @@ def reduce_mean_xp(xp):
     columns = set( [col for run in xp for df in run.values() for col in df.columns] )
     columns.remove('decision')
     xp_mean = {}
-    for sysTES in sysTES_set:        
+    for sysTES in sysTES_set:
         mean_df = pd.DataFrame({'decision': xp[0][sysTES]['decision']})
         for col in columns:
             mean_df[col] = np.mean(pd.concat([run[sysTES][col] for run in xp if col in run[sysTES].columns], axis=1), axis=1)
         xp_mean[sysTES] = mean_df
     return xp_mean
 
+
 def reduce_std_xp(xp):
     sysTES_set = set( [sysTES for run in xp for sysTES in run.keys()] )
     columns = set( [col for run in xp for df in run.values() for col in df.columns] )
     columns.remove('decision')
     xp_std = {}
-    for sysTES in sysTES_set:        
+    for sysTES in sysTES_set:
         std_df = pd.DataFrame({'decision': xp[0][sysTES]['decision']})
         for col in columns:
             std_df[col] = pd.concat([run[sysTES][col] for run in xp if col in run[sysTES].columns], axis=1).std(axis=1)

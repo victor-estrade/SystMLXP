@@ -8,7 +8,6 @@ import os
 import pandas as pd
 
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import GradientBoostingClassifier
 from sklearn.externals import joblib
 
@@ -20,7 +19,7 @@ class GradientBoostingModel(BaseEstimator, ClassifierMixin):
         self.n_estimators = n_estimators
         self.max_depth = max_depth
         self.clf = GradientBoostingClassifier(learning_rate=learning_rate,
-                                 n_estimators=n_estimators, 
+                                 n_estimators=n_estimators,
                                  max_depth=max_depth,
                                  )
 
@@ -32,7 +31,6 @@ class GradientBoostingModel(BaseEstimator, ClassifierMixin):
         if isinstance(sample_weight, pd.core.generic.NDFrame):
             sample_weight = sample_weight.values
         self.clf.fit(X, y, sample_weight=sample_weight)
-
 
     def predict(self, X):
         if isinstance(X, pd.core.generic.NDFrame):
@@ -61,4 +59,3 @@ class GradientBoostingModel(BaseEstimator, ClassifierMixin):
     def get_name(self):
         name = "GradientBoostingModel-{}-{}-{}".format(self.learning_rate, self.n_estimators, self.max_depth)
         return name
-

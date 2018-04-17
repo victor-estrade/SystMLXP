@@ -46,23 +46,23 @@ def parse_args():
 
     parser.add_argument("--verbosity", "-v", type=int, choices=[0, 1, 2],
         default=0, help="increase output verbosity")
-    
+
     # DATASET CHOICE
     parser.add_argument('--data', help='chosen dataset',
         type=str, choices=PROBLEMS.keys(), default='mnist' )
-    
+
     # MODEL CHOICE
     parser.add_argument('model', help='model to train',
         type=str, choices=ARG_MODELS )
-    
+
 
     # MODEL HYPER PARAMETERS
     parser.add_argument('--learning-rate', '--lr', help='learning rate',
         default=1e-3, type=float)
-    
+
     parser.add_argument('--trade-off', help='trade-off for multi-objective models',
         default=1.0, type=float)
-    
+
     parser.add_argument('-w', '--width', help='width for the data augmentation sampling',
         default=5, type=float)
 
@@ -78,7 +78,7 @@ def parse_args():
     parser.add_argument('--n-adv-pre-training-steps', 
         help='number of update steps for the pre-training',
         default=3000, type=int)
-    
+
     parser.add_argument('--n-clf-pre-training-steps', 
         help='number of update steps for the pre-training',
         default=3000, type=int)
@@ -90,7 +90,6 @@ def parse_args():
     parser.add_argument('--fraction-signal-to-keep', 
         help='fraction of signal to keep in Filters',
         default=0.95, type=float)
-
 
     # OTHER
     parser.add_argument('--no-cuda', '--no-gpu', help='flag to use or not the gpu',
@@ -107,9 +106,9 @@ def extract_model_args(args, get_model):
     return model_args
 
 
-#=====================================================================
+# =====================================================================
 # stuff
-#=====================================================================
+# =====================================================================
 def load_problem(data_name):
     problem = None
     if data_name in PROBLEMS:
@@ -118,6 +117,7 @@ def load_problem(data_name):
         raise ValueError('Unrecognized dataset name : {}'
                          'Expected one from {}'. format(data_name, PROBLEMS.keys()))
     return problem
+
 
 def get_model_class(data_name, model_name):
     model_class = None
@@ -128,9 +128,9 @@ def get_model_class(data_name, model_name):
                          'Expected one from {}'. format(data_name, MODELS.keys()))
     return model_class
 
-#=====================================================================
+# =====================================================================
 # MAIN
-#=====================================================================
+# =====================================================================
 def main():
     args = parse_args()
     pprint(args)

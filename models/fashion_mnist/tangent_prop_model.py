@@ -34,9 +34,9 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         self.alpha = alpha
         self.cuda = cuda
         self.verbose = verbose
-        
+
         self.jnet = JNet()
-        
+
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
         self.loss_hook = LossMonitorHook()
@@ -44,33 +44,33 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         self.jcriterion = WeightedL2Loss()
         self.jloss_hook = LossMonitorHook()
         self.jcriterion.register_forward_hook(self.jloss_hook)
-        
+
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
 
         # self.scaler = StandardScaler()
-        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer, 
+        self.clf = TangentPropClassifier(self.jnet, self.criterion, self.jcriterion, self.optimizer,
                                          n_steps=self.n_steps, batch_size=self.batch_size,
                                          trade_off=trade_off, cuda=cuda)
 
     def fit(self, X, y, sample_weight=None):
         T = self.tangent_extractor.compute_tangent(X)
-        X = X.reshape(-1, 28*28) / 255
+        X = X.reshape(-1, 28 * 28) / 255
         T = T.reshape(*X.shape) / 255
         # X = self.scaler.fit_transform(X)
         self.loss_hook.reset()
         self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
-    
+
     def predict(self, X):
-        X = X.reshape(-1, 28*28) / 255
+        X = X.reshape(-1, 28 * 28) / 255
         # X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
-    
+
     def predict_proba(self, X):
-        X = X.reshape(-1, 28*28) / 255
+        X = X.reshape(-1, 28 * 28) / 255
         # X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
@@ -78,7 +78,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
     def save(self, dir_path):
         path = os.path.join(dir_path, 'weights.pth')
         torch.save(self.jnet.state_dict(), path)
-        
+
         path = os.path.join(dir_path, 'Scaler.pkl')
         # joblib.dump(self.scaler, path)
 
@@ -87,7 +87,7 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         path = os.path.join(dir_path, 'jlosses.json')
         self.jloss_hook.save_state(path)
         return self
-    
+
     def load(self, dir_path):
         path = os.path.join(dir_path, 'weights.pth')
         if self.cuda:
@@ -103,11 +103,11 @@ class TangentPropModel(BaseEstimator, ClassifierMixin):
         path = os.path.join(dir_path, 'jlosses.json')
         self.jloss_hook.load_state(path)
         return self
-    
+
     def describe(self):
         return dict(name='tangent_prop', n_steps=self.n_steps, batch_size=self.batch_size, 
                     learning_rate=self.learning_rate, trade_off=self.trade_off, alpha=self.alpha)
-    
+
     def get_name(self):
         name = "TangentPropModel-{}-{}-{}-{}-{}".format(self.n_steps, self.batch_size, 
                             self.learning_rate, self.trade_off, self.alpha)
@@ -128,9 +128,9 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.n_augment = n_augment
         self.cuda = cuda
         self.verbose = verbose
-        
+
         self.jnet = JNet()
-        
+
         self.optimizer = optim.Adam(self.jnet.parameters(), lr=learning_rate)
         self.criterion = WeightedCrossEntropyLoss()
         self.loss_hook = LossMonitorHook()
@@ -138,7 +138,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         self.jcriterion = WeightedL2Loss()
         self.jloss_hook = LossMonitorHook()
         self.jcriterion.register_forward_hook(self.jloss_hook)
-        
+
         self.tangent_extractor = TangentExtractor(skewing_function, alpha=alpha)
 #         self.tangent_extractor = TangentComputer()
 
@@ -152,22 +152,22 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         X, y, sample_weight, z = self.augmenter(X, y, sample_weight)
         T = self.tangent_extractor.compute_tangent(X)
-        X = X.reshape(-1, 28*28) / 255
+        X = X.reshape(-1, 28 * 28) / 255
         T = T.reshape(*X.shape) / 255
         # X = self.scaler.fit_transform(X)
         self.loss_hook.reset()
         self.jloss_hook.reset()
         self.clf.fit(X, y, T, sample_weight=sample_weight)
         return self
-    
+
     def predict(self, X):
-        X = X.reshape(-1, 28*28) / 255
+        X = X.reshape(-1, 28 * 28) / 255
         # X = self.scaler.transform(X)
         y_pred = self.clf.predict(X)
         return y_pred
-    
+
     def predict_proba(self, X):
-        X = X.reshape(-1, 28*28) / 255
+        X = X.reshape(-1, 28 * 28) / 255
         # X = self.scaler.transform(X)
         proba = self.clf.predict_proba(X)
         return proba
@@ -175,7 +175,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
     def save(self, dir_path):
         path = os.path.join(dir_path, 'weights.pth')
         torch.save(self.jnet.state_dict(), path)
-        
+
         path = os.path.join(dir_path, 'Scaler.pkl')
         # joblib.dump(self.scaler, path)
 
@@ -184,7 +184,7 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         path = os.path.join(dir_path, 'jlosses.json')
         self.jloss_hook.save_state(path)
         return self
-    
+
     def load(self, dir_path):
         path = os.path.join(dir_path, 'weights.pth')
         if self.cuda:
@@ -200,13 +200,12 @@ class AugmentedTangentPropModel(BaseEstimator, ClassifierMixin):
         path = os.path.join(dir_path, 'jlosses.json')
         self.jloss_hook.load_state(path)
         return self
-    
+
     def describe(self):
-        return dict(name='tangent_prop', n_steps=self.n_steps, batch_size=self.batch_size, 
+        return dict(name='tangent_prop', n_steps=self.n_steps, batch_size=self.batch_size,
                     learning_rate=self.learning_rate, trade_off=self.trade_off, alpha=self.alpha)
-    
+
     def get_name(self):
         name = "TangentPropModel-{}-{}-{}-{}-{}".format(self.n_steps, self.batch_size, 
                             self.learning_rate, self.trade_off, self.alpha)
         return name
-
