@@ -7,6 +7,7 @@ from __future__ import absolute_import
 import torch
 from torch.autograd import Variable
 
+
 def make_variable(arr, cuda=True, volatile=False):
     """
     Transform given numpy array to a torch.autograd.Variable

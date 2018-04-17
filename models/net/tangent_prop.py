@@ -143,16 +143,16 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
 
     def fit(self, X, y, T, sample_weight=None):
         if sample_weight is None:
-            sample_weight = np.ones_like(y)    
+            sample_weight = np.ones_like(y)
 
         X = X.astype(np.float32)
         T = T.astype(np.float32)
         sample_weight = sample_weight.astype(np.float32)
         y = y.astype(np.int64)
-        
+
         batch_size = self.batch_size
         n_steps = self.n_steps
-        
+
         self.jnet.reset_parameters()
         batch_gen = EpochShuffle(X, y, sample_weight, T, batch_size=batch_size)
         for i, (X_batch, y_batch, w_batch, T_batch) in enumerate(islice(batch_gen, n_steps)):
@@ -160,21 +160,21 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
             T_batch = make_variable(T_batch, cuda=self.cuda_flag)
             w_batch = make_variable(w_batch, cuda=self.cuda_flag)
             y_batch = make_variable(y_batch, cuda=self.cuda_flag)
-            self.jnet.train() # train mode
-            self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
+            self.jnet.train()  # train mode
+            self.optimizer.zero_grad()  # zero-out the gradients because they accumulate by default
             y_pred, j_pred = self.jnet(X_batch, T_batch)
-            loss = self.criterion(y_pred, y_batch, w_batch) 
-            jloss = self.jcriterion(j_pred, w_batch) 
+            loss = self.criterion(y_pred, y_batch, w_batch)
+            jloss = self.jcriterion(j_pred, w_batch)
             loss = loss + self.trade_off * jloss
-            loss.backward() # compute gradients
-            self.optimizer.step() # update params
+            loss.backward()  # compute gradients
+            self.optimizer.step()  # update params
             # TODO : Call epoch hook. Compute i*batch_size/epoch to catch epoch's end
             # RMQ : Or maybe hooks should be handle by torch.Module or my TrainableNet ?
         return self
-    
+
     def predict(self, X, batch_size=None):
         return np.argmax(self.predict_proba(X, batch_size=batch_size), axis=1)
-    
+
     def predict_proba(self, X, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size
@@ -188,4 +188,4 @@ class TangentPropClassifier(BaseEstimator, ClassifierMixin):
             proba_batch = F.softmax(out, dim=1).cpu().data.numpy()
             y_proba.extend(proba_batch)
         y_proba = np.array(y_proba)
-        return y_proba 
+        return y_proba

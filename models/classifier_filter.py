@@ -14,15 +14,17 @@ def filter_arrays(idx, *arrays):
     filtered_arrays = tuple(arr[idx] if arr is not None else None for arr in arrays)
     return filtered_arrays
 
+
 def filter_pandarrays(idx, *dataframes):
     filtered_df = tuple(df.iloc[idx].copy() if df is not None else None for df in dataframes)
     return filtered_df
+
 
 class ClassifierFilter(object):
     def __init__(self, clf, fraction_signal_to_keep=0.95):
         super().__init__()
         self.clf = clf
-        self.fraction_signal_to_keep =  fraction_signal_to_keep
+        self.fraction_signal_to_keep = fraction_signal_to_keep
         self.score_threshold_ = 0
 
     def fit(self, X, y, sample_weight=None):
@@ -37,7 +39,7 @@ class ClassifierFilter(object):
             fraction_signals_kept = np.cumsum(sample_weight[idx] * y[idx]) / np.sum(sample_weight * y)
         else:
             fraction_signals_kept = np.cumsum(y[idx]) / np.sum(y)
-        i = np.searchsorted(fraction_signals_kept, 1-self.fraction_signal_to_keep)
+        i = np.searchsorted(fraction_signals_kept, 1 - self.fraction_signal_to_keep)
         self.score_threshold_ = float(clf_score[idx[i]])
         return self
 
@@ -49,7 +51,7 @@ class ClassifierFilter(object):
         return idx[i:]
 
     def filter(self, X, *arrays):
-        idx =  self.filter_idx( X )
+        idx = self.filter_idx( X )
         # TODO : Probably a cleaner way of sampling from DataFrame and NumpyArrays
         if isinstance(X, pd.core.generic.NDFrame):
             return filter_pandarrays( idx, X, *arrays )
@@ -61,12 +63,10 @@ class ClassifierFilter(object):
 
     def save_state(self, path):
         with open(path, 'w') as f:
-            data = dict(score_threshold=self.score_threshold_, 
-                       )
+            data = dict(score_threshold=self.score_threshold_, )
             json.dump(data, f)
 
     def load_state(self, path):
         with open(path, 'r') as f:
             data = json.load(f)
             self.score_threshold_ = data['score_threshold']
-

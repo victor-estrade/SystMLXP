@@ -3,12 +3,14 @@ import numpy as np
 
 from collections import Generator
 
+
 def assert_arrays_have_same_shape(*arrays):
     length = arrays[0].shape[0]
     # Assert that every array have the same 1st dimension length:
     for i, arr in enumerate(arrays):
         assert arr.shape[0] == length, "Every array should have the same shape: " \
-                        " array {} length = {}  but expected length = {} ".format(i+1, arr.shape[0], length)
+            " array {} length = {}  but expected length = {} ".format(i + 1, arr.shape[0], length)
+
 
 def uniform_sampling(*args, batch_size=None):
     """
@@ -37,7 +39,7 @@ def epoch_shuffle(*args, batch_size=None, shuffle=True):
 
     size = args[0].shape[0]
     assert size > batch_size, 'batch_size should be smaller than the number of samples in the given arrays'
-    
+
     while(True):
         if shuffle:
             indices = np.arange(size)
@@ -48,7 +50,6 @@ def epoch_shuffle(*args, batch_size=None, shuffle=True):
             else:
                 excerpt = slice(start_idx, start_idx + batch_size)
             yield tuple(arr[excerpt] for arr in args)
-
 
 
 class OneEpoch(Generator):
@@ -64,7 +65,7 @@ class OneEpoch(Generator):
 
         size = arrays[0].shape[0]
         assert size > batch_size, 'batch_size should be smaller than the number of samples in the given arrays'
-        
+
         self.arrays = arrays
         self.start_idx = 0
         self.batch_size = batch_size
@@ -84,7 +85,7 @@ class OneEpoch(Generator):
             return self.arrays[0][excerpt]
         else:
             return tuple(arr[excerpt] for arr in self.arrays)
-    
+
     def throw(self, type=None, value=None, traceback=None):
         raise StopIteration
 
@@ -102,7 +103,7 @@ class Epoch(Generator):
 
         size = arrays[0].shape[0]
         assert size > batch_size, 'batch_size should be smaller than the number of samples in the given arrays'
-        
+
         self.arrays = arrays
         self.start_idx = 0
         self.batch_size = batch_size
@@ -124,7 +125,7 @@ class Epoch(Generator):
             return self.arrays[0][excerpt]
         else:
             return tuple(arr[excerpt] for arr in self.arrays)
-    
+
     def throw(self, type=None, value=None, traceback=None):
         raise StopIteration
 
@@ -142,7 +143,7 @@ class EpochShuffle(Generator):
 
         size = arrays[0].shape[0]
         assert size > batch_size, 'batch_size should be smaller than the number of samples in the given arrays'
-        
+
         self.arrays = arrays
         self.start_idx = 0
         self.batch_size = batch_size
@@ -159,7 +160,7 @@ class EpochShuffle(Generator):
             self.start_idx = 0
             self.epoch += 1
             np.random.shuffle(self.indices)
-            
+
         excerpt = self.indices[self.start_idx:self.start_idx + self.batch_size]
         self.start_idx += self.batch_size
         self.step += 1
@@ -168,7 +169,7 @@ class EpochShuffle(Generator):
             return self.arrays[0][excerpt]
         else:
             return tuple(arr[excerpt] for arr in self.arrays)
-    
+
     def throw(self, type=None, value=None, traceback=None):
         raise StopIteration
 
@@ -186,7 +187,7 @@ class OneEpochShuffle(Generator):
 
         size = arrays[0].shape[0]
         assert size > batch_size, 'batch_size should be smaller than the number of samples in the given arrays'
-        
+
         self.arrays = arrays
         self.start_idx = 0
         self.batch_size = batch_size
@@ -208,6 +209,6 @@ class OneEpochShuffle(Generator):
             return self.arrays[0][excerpt]
         else:
             return tuple(arr[excerpt] for arr in self.arrays)
-    
+
     def throw(self, type=None, value=None, traceback=None):
         raise StopIteration

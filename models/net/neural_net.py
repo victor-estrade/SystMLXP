@@ -44,34 +44,34 @@ class NeuralNetClassifier(BaseEstimator, ClassifierMixin):
     def fit(self, X, y, sample_weight=None):
         if sample_weight is None:
             sample_weight = np.ones_like(y)
-        
+
         X = X.astype(np.float32)
         sample_weight = sample_weight.astype(np.float32)
         y = y.astype(np.int64)
-        
+
         batch_size = self.batch_size
         n_steps = self.n_steps
-        
+
         self.net.reset_parameters()
-        
+
         batch_gen = EpochShuffle(X, y, sample_weight, batch_size=batch_size)
         for i, (X_batch, y_batch, w_batch) in enumerate(islice(batch_gen, n_steps)):
             X_batch = make_variable(X_batch, cuda=self.cuda_flag)
             w_batch = make_variable(w_batch, cuda=self.cuda_flag)
             y_batch = make_variable(y_batch, cuda=self.cuda_flag)
-            self.net.train() # train mode
-            self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
+            self.net.train()  # train mode
+            self.optimizer.zero_grad()  # zero-out the gradients because they accumulate by default
             y_pred = self.net.forward(X_batch)
             loss = self.criterion(y_pred, y_batch, w_batch)
-            loss.backward() # compute gradients
-            self.optimizer.step() # update params
+            loss.backward()  # compute gradients
+            self.optimizer.step()  # update params
             # TODO : Call epoch hook. Compute i*batch_size/epoch to catch epoch's end
             # RMQ : Or maybe hooks should be handle by torch.Module or my TrainableNet ?
         return self
-    
+
     def predict(self, X, batch_size=None):
         return np.argmax(self.predict_proba(X, batch_size=batch_size), axis=1)
-    
+
     def predict_proba(self, X, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size
@@ -84,7 +84,8 @@ class NeuralNetClassifier(BaseEstimator, ClassifierMixin):
             proba_batch = F.softmax(self.net.forward(X_batch), dim=1).cpu().data.numpy()
             y_proba.extend(proba_batch)
         y_proba = np.array(y_proba)
-        return y_proba 
+        return y_proba
+
 
 class NeuralNetRegressor(BaseEstimator, RegressorMixin):
     def __init__(self, net, criterion, optimizer, n_steps, batch_size, cuda=False, verbose=0):
@@ -110,31 +111,31 @@ class NeuralNetRegressor(BaseEstimator, RegressorMixin):
     def fit(self, X, y, sample_weight=None):
         if sample_weight is None:
             sample_weight = np.ones_like(y)
-        
+
         X = X.astype(np.float32)
         sample_weight = sample_weight.astype(np.float32)
         y = y.astype(np.float32)
-        
+
         batch_size = self.batch_size
         n_steps = self.n_steps
-        
+
         self.net.reset_parameters()
-        
+
         batch_gen = EpochShuffle(X, y, sample_weight, batch_size=batch_size)
-        self.net.train() # train mode
+        self.net.train()  # train mode
         for i, (X_batch, y_batch, w_batch) in enumerate(islice(batch_gen, n_steps)):
             X_batch = make_variable(X_batch, cuda=self.cuda_flag)
             w_batch = make_variable(w_batch, cuda=self.cuda_flag)
             y_batch = make_variable(y_batch, cuda=self.cuda_flag)
-            self.optimizer.zero_grad() # zero-out the gradients because they accumulate by default
+            self.optimizer.zero_grad()  # zero-out the gradients because they accumulate by default
             y_pred = self.net.forward(X_batch)
             loss = self.criterion(y_pred, y_batch, w_batch)
-            loss.backward() # compute gradients
-            self.optimizer.step() # update params
+            loss.backward()  # compute gradients
+            self.optimizer.step()  # update params
             # TODO : Call epoch hook. Compute i*batch_size/epoch to catch epoch's end
             # RMQ : Or maybe hooks should be handle by torch.Module or my TrainableNet ?
         return self
-    
+
     def predict(self, X, batch_size=None):
         if batch_size is None:
             batch_size = self.batch_size
@@ -147,4 +148,4 @@ class NeuralNetRegressor(BaseEstimator, RegressorMixin):
             pred_batch = self.net.forward(X_batch).cpu().data.numpy()
             y_pred.extend(pred_batch)
         y_pred = np.array(y_pred)
-        return y_pred 
+        return y_pred

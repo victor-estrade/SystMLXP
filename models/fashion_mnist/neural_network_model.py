@@ -10,8 +10,6 @@ import torch
 import torch.optim as optim
 
 from sklearn.base import BaseEstimator, ClassifierMixin
-from sklearn.preprocessing import StandardScaler
-from sklearn.externals import joblib
 
 from ..net.neural_net import NeuralNetClassifier
 from ..net.weighted_criterion import WeightedCrossEntropyLoss
@@ -87,7 +85,7 @@ class NeuralNetModel(BaseEstimator, ClassifierMixin):
         return self
 
     def describe(self):
-        return dict(name='neural_net', learning_rate=self.learning_rate, 
+        return dict(name='neural_net', learning_rate=self.learning_rate,
                     n_steps=self.n_steps, batch_size=self.batch_size)
 
     def get_name(self):
@@ -118,7 +116,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         self.augmenter = NormalDataAugmenter(skewing_function, width=width, n_augment=n_augment)
 
         # self.scaler = StandardScaler()
-        self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer, 
+        self.clf = NeuralNetClassifier(self.net, self.criterion, self.optimizer,
                                        n_steps=self.n_steps, batch_size=self.batch_size, cuda=cuda)
 
     def fit(self, X, y, sample_weight=None):
@@ -167,7 +165,7 @@ class AugmentedNeuralNetModel(BaseEstimator, ClassifierMixin):
         return self
 
     def describe(self):
-        return dict(name='augmented_neural_net', learning_rate=self.learning_rate, 
+        return dict(name='augmented_neural_net', learning_rate=self.learning_rate,
                     n_steps=self.n_steps, batch_size=self.batch_size, width=self.width, n_augment=self.n_augment)
 
     def get_name(self):

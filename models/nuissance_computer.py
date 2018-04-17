@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 
 import numpy as np
 
+
 class ZComputer(object):
     def __init__(self):
         super().__init__()
@@ -15,4 +16,3 @@ class ZComputer(object):
         y = X[:, 1]
         z = np.arctan2(y, x)
         return z
-    
