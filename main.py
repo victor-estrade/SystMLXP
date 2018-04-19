@@ -22,78 +22,81 @@ from problem import higgs_uci
 
 
 MODELS = {
-        'mnist': mnist_models,
-        'fashion-mnist': fashion_mnist_models,
-        'higgs-geant': higsml_models,
-        'higgs-uci': higgsuci_models,
+    'mnist': mnist_models,
+    'fashion-mnist': fashion_mnist_models,
+    'higgs-geant': higsml_models,
+    'higgs-uci': higgsuci_models,
          }
 
 ARG_MODELS = ['NN', 'ANN', 'TP', 'ATP', 'PAN', 'APAN', 'NNC', 'GB']
 
 PROBLEMS = {
-        'mnist': mnist,
-        'fashion-mnist': fashion_mnist,
-        'higgs-geant': higgs_geant,
-        'higgs-uci': higgs_uci,
-        }
+    'mnist': mnist,
+    'fashion-mnist': fashion_mnist,
+    'higgs-geant': higgs_geant,
+    'higgs-uci': higgs_uci,
+           }
 
 
 def parse_args():
     # TODO : more descriptive msg.
-    parser = argparse.ArgumentParser(
-        description="Training launcher"
-        )
+    parser = argparse.ArgumentParser(description="Training launcher")
 
     parser.add_argument("--verbosity", "-v", type=int, choices=[0, 1, 2],
-        default=0, help="increase output verbosity")
+                        default=0, help="increase output verbosity")
 
     # DATASET CHOICE
     parser.add_argument('--data', help='chosen dataset',
-        type=str, choices=PROBLEMS.keys(), default='mnist' )
+                        type=str, choices=PROBLEMS.keys(), default='mnist' )
 
     # MODEL CHOICE
     parser.add_argument('model', help='model to train',
-        type=str, choices=ARG_MODELS )
-
+                        type=str, choices=ARG_MODELS )
 
     # MODEL HYPER PARAMETERS
+    parser.add_argument('--n-estimators', help='number of estimators',
+                        default=1000, type=int)
+
+    parser.add_argument('--max-depth', help='maximum depth of trees',
+                        default=3, type=int)
+
     parser.add_argument('--learning-rate', '--lr', help='learning rate',
-        default=1e-3, type=float)
+                        default=1e-3, type=float)
 
     parser.add_argument('--trade-off', help='trade-off for multi-objective models',
-        default=1.0, type=float)
+                        default=1.0, type=float)
 
     parser.add_argument('-w', '--width', help='width for the data augmentation sampling',
-        default=5, type=float)
+                        default=5, type=float)
 
     parser.add_argument('--batch-size', help='mini-batch size',
-        default=128, type=int)
+                        default=128, type=int)
 
     parser.add_argument('--n-steps', help='number of update steps',
-        default=10000, type=int)
+                        default=10000, type=int)
 
     parser.add_argument('--n-augment', help='number of times the dataset is augmented',
-        default=2, type=int)
+                        default=2, type=int)
 
-    parser.add_argument('--n-adv-pre-training-steps', 
-        help='number of update steps for the pre-training',
-        default=3000, type=int)
+    parser.add_argument('--n-adv-pre-training-steps',
+                        help='number of update steps for the pre-training',
+                        default=3000, type=int)
 
-    parser.add_argument('--n-clf-pre-training-steps', 
-        help='number of update steps for the pre-training',
-        default=3000, type=int)
+    parser.add_argument('--n-clf-pre-training-steps',
+                        help='number of update steps for the pre-training',
+                        default=3000, type=int)
 
-    parser.add_argument('--n-recovery-steps', 
-        help='number of update steps for the catch training of auxiliary models',
-        default=5, type=int)
+    parser.add_argument('--n-recovery-steps',
+                        help='number of update steps for the catch training of auxiliary models',
+                        default=5, type=int)
 
-    parser.add_argument('--fraction-signal-to-keep', 
-        help='fraction of signal to keep in Filters',
-        default=0.95, type=float)
+    parser.add_argument('--fraction-signal-to-keep',
+                        help='fraction of signal to keep in Filters',
+                        default=0.95, type=float)
 
     # OTHER
     parser.add_argument('--no-cuda', '--no-gpu', help='flag to use or not the gpu',
-        action='store_false', dest='cuda')
+                        action='store_false', dest='cuda')
 
     args = parser.parse_args()
     return args
@@ -127,6 +130,7 @@ def get_model_class(data_name, model_name):
         raise ValueError('Unrecognized dataset name : {}'
                          'Expected one from {}'. format(data_name, MODELS.keys()))
     return model_class
+
 
 # =====================================================================
 # MAIN
