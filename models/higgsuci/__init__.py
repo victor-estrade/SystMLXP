@@ -16,15 +16,19 @@ from .pivot_model import AugmentedPivotModel
 
 from .cascade_model import CascadeNeuralNetModel
 
+from .gradient_boost import GradientBoostingModel
+
 MODELS = {
-    'NN' : NeuralNetModel,
-    'ANN' : AugmentedNeuralNetModel,
-    'TP' : TangentPropModel,
-    'ATP' : AugmentedTangentPropModel,
-    'PAN' : PivotModel,
-    'APAN' : AugmentedPivotModel,
-    'NNC' : CascadeNeuralNetModel,
+    'NN': NeuralNetModel,
+    'ANN': AugmentedNeuralNetModel,
+    'TP': TangentPropModel,
+    'ATP': AugmentedTangentPropModel,
+    'PAN': PivotModel,
+    'APAN': AugmentedPivotModel,
+    'NNC': CascadeNeuralNetModel,
+    'GB': GradientBoostingModel,
 }
+
 
 def higgsuci_models(model_name):
     if model_name in MODELS:
