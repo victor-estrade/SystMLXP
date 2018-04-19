@@ -22,7 +22,7 @@ pwd
 # source /home/tao/${USER}/miniconda3/bin/activate default
 
 # Activate python and use local libraries
-bash "${HOME}/adapt_conda.sh"
+# bash "${HOME}/adapt_conda.sh"
 source activate py35
 
 WORKDIR="/home/tao/${USER}/workspace/SystML/SystMLXP"
