@@ -160,7 +160,7 @@ sbatch -p besteffort run.sh NNC --data higgs-uci --batch-size 1024 --fraction-si
 sbatch -p besteffort run.sh NNC --data higgs-uci --batch-size 1024 --fraction-signal-to-keep 0.5
 
 # # Gradient Boosting
-sbatch -p besteffort run.sh GB --data higgs-geant --learning-rate 0.1
+sbatch -p besteffort run.sh GB --data higgs-uci --learning-rate 0.1
 
 # ============================================================================
 #	HIGGS GEANT 4
