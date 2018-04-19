@@ -3,7 +3,7 @@
 #SBATCH --account=tau
 #SBATCH --job-name=SystMLXP
 #SBATCH --output=%j_SystMLXP.log
-#SBATCH -t 8:00:00             # max runtime hours:min:sec
+#SBATCH -t 2-00:00:00             # max runtime days-hours:min:sec
 #SBATCH --cpus-per-task=6
 #SBATCH --gres=gpu:1
 
