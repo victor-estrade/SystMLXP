@@ -146,8 +146,9 @@ class NeuralNetRegressor(BaseEstimator, RegressorMixin):
         self.net.eval()
         for X_batch in batch_gen:
             X_batch = X_batch.astype(np.float32)
-            X_batch = make_variable(X_batch, cuda=self.cuda_flag, volatile=True)
-            pred_batch = self.net.forward(X_batch).cpu().data.numpy()
+            with torch.no_grad():
+                X_batch = make_variable(X_batch, cuda=self.cuda_flag)
+                pred_batch = self.net.forward(X_batch).cpu().data.numpy()
             y_pred.extend(pred_batch)
         y_pred = np.array(y_pred)
         return y_pred

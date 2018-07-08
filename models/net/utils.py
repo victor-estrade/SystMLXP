@@ -12,7 +12,7 @@ def make_variable(arr, cuda=True, volatile=False):
     """
     Transform given numpy array to a torch.autograd.Variable
     """
-    var = Variable(torch.from_numpy(arr), volatile=volatile)
+    var = Variable(torch.from_numpy(arr))
     if cuda:
         var = var.cuda()
     return var
