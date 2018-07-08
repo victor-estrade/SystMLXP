@@ -13,7 +13,7 @@ class LightLossMonitorHook(object):
         self.losses = []
 
     def __call__(self, module, input, output):
-        self.losses.append(output.data[0])
+        self.losses.append(output.item())
 
     def reset(self):
         self.losses = []
@@ -37,7 +37,7 @@ class LossMonitorHook(object):
     def __call__(self, module, input, output):
         self.i += 1
         if self.i >= self.step:
-            self.losses.append(output.data[0])
+            self.losses.append(output.item())
             self.i = 0
 
     def reset(self):
