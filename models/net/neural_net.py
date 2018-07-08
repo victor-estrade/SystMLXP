@@ -5,6 +5,7 @@ from __future__ import absolute_import
 
 import numpy as np
 
+import torch
 import torch.nn.functional as F
 
 from sklearn.base import BaseEstimator
@@ -80,8 +81,9 @@ class NeuralNetClassifier(BaseEstimator, ClassifierMixin):
         self.net.eval()
         for X_batch in batch_gen:
             X_batch = X_batch.astype(np.float32)
-            X_batch = make_variable(X_batch, cuda=self.cuda_flag, volatile=True)
-            proba_batch = F.softmax(self.net.forward(X_batch), dim=1).cpu().data.numpy()
+            with torch.no_grad():
+                X_batch = make_variable(X_batch, cuda=self.cuda_flag, volatile=True)
+                proba_batch = F.softmax(self.net.forward(X_batch), dim=1).cpu().data.numpy()
             y_proba.extend(proba_batch)
         y_proba = np.array(y_proba)
         return y_proba
