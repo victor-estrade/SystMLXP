@@ -16,7 +16,7 @@
 date
 hostname
 pwd
-
+docker images
 
 WORKDIR="/home/tao/vestrade/workspace/SystML/SystMLXP"
 
