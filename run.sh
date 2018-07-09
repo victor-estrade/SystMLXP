@@ -24,7 +24,7 @@ sdocker -i  -v /data/titanic_3/users/vestrade/datawarehouse:/root/datawarehouse 
 			-v /data/titanic_3/users/vestrade/savings:/data/titanic_3/users/vestrade/savings \
 			-v $WORKDIR:$WORKDIR \
 			vestrade/systml:latest \ 
-            [/bin/sh -c "cd ${WORKDIR}; python main.py $*"]
+            /bin/sh -c "cd ${WORKDIR}; python main.py $*"
 
 
 echo "DONE"
