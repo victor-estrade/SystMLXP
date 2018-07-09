@@ -20,7 +20,7 @@ pwd
 
 WORKDIR="/home/tao/vestrade/workspace/SystML/SystMLXP"
 
-sdocker -it -v /data/titanic_3/users/vestrade/datawarehouse:/home/tao/vestrade/datawarehouse \
+sdocker -it -v /data/titanic_3/users/vestrade/datawarehouse:~/datawarehouse \
 			-v /data/titanic_3/users/vestrade/savings:/data/titanic_3/users/vestrade/savings \
 			vestrade/systml:latest \
             [/bin/sh -c "cd ${WORKDIR}; python main.py $*"]
