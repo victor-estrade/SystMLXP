@@ -18,9 +18,9 @@ hostname
 pwd
 
 
-WORKDIR="/home/tao/${USER}/workspace/SystML/SystMLXP"
+WORKDIR="/home/tao/vestrade/workspace/SystML/SystMLXP"
 
-sdocker -it -v /home/tao/${USER}/datawarehouse:/home/tao/${USER}/datawarehouse \
+sdocker -it -v /data/titanic_3/users/vestrade/datawarehouse:/home/tao/vestrade/datawarehouse \
 			-v /data/titanic_3/users/vestrade/savings:/data/titanic_3/users/vestrade/savings \
 			vestrade/systml:latest \
             [/bin/sh -c "cd ${WORKDIR}; python main.py $*"]
