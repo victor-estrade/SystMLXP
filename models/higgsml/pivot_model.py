@@ -46,6 +46,7 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         self.verbose = verbose
 
         self.dnet = Net()
+        self.net = self.dnet  # alias
         self.rnet = RNet()
 
         self.doptimizer = optim.Adam(self.dnet.parameters(), lr=classifier_learning_rate)
@@ -54,7 +55,8 @@ class PivotModel(BaseEstimator, ClassifierMixin):
         self.dcriterion.register_forward_hook(self.dloss_hook)
         self.classifier = NeuralNetClassifier(self.dnet, self.dcriterion, self.doptimizer,
                                               n_steps=n_clf_pre_training_steps, batch_size=batch_size, cuda=self.cuda)
-
+        self.clf = self.classifier  # alias
+        
         self.roptimizer = optim.Adam(self.rnet.parameters(), lr=adversarial_learning_rate)
         self.rcriterion = WeightedMSELoss()
         self.rloss_hook = LossMonitorHook()
@@ -175,6 +177,7 @@ class AugmentedPivotModel(BaseEstimator, ClassifierMixin):
         self.verbose = verbose
 
         self.dnet = Net()
+        self.net = self.dnet  # alias
         self.rnet = RNet()
 
         self.doptimizer = optim.Adam(self.dnet.parameters(), lr=classifier_learning_rate)
@@ -183,6 +186,7 @@ class AugmentedPivotModel(BaseEstimator, ClassifierMixin):
         self.dcriterion.register_forward_hook(self.dloss_hook)
         self.classifier = NeuralNetClassifier(self.dnet, self.dcriterion, self.doptimizer,
                                               n_steps=n_clf_pre_training_steps, batch_size=batch_size, cuda=self.cuda)
+        self.clf = self.classifier  # alias
 
         self.roptimizer = optim.Adam(self.rnet.parameters(), lr=adversarial_learning_rate)
         self.rcriterion = WeightedMSELoss()
