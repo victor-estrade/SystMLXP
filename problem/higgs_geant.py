@@ -716,7 +716,8 @@ def cut(data, threshold=22.0):
 
 def skewing_function(data, z=1.0, missing_value=0., remove_mass_MMC=True, threshold=22.0):
     skewed_data = skew(data, z=z, missing_value=missing_value, remove_mass_MMC=remove_mass_MMC)
-    skewed_data = cut(skewed_data , threshold=threshold )
+    if threshold is not None:
+        skewed_data = cut(skewed_data , threshold=threshold )
     return skewed_data
 
 def tangent(df, alpha=1e-3):
