@@ -710,14 +710,14 @@ def skew(data, z=1.0, missing_value=0., remove_mass_MMC=True):
         data_skewed = data_skewed.drop( ["DER_mass_MMC"], axis=1 )
     return data_skewed
 
-def cut(data, threshold=22.0):
-    data_cut = data[data['PRI_tau_pt'] > threshold]
+def cut(data, cut_threshold=22.0):
+    data_cut = data[data['PRI_tau_pt'] > cut_threshold]
     return data_cut
 
-def skewing_function(data, z=1.0, missing_value=0., remove_mass_MMC=True, threshold=22.0):
+def skewing_function(data, z=1.0, missing_value=0., remove_mass_MMC=True, cut_threshold=22.0):
     skewed_data = skew(data, z=z, missing_value=missing_value, remove_mass_MMC=remove_mass_MMC)
-    if threshold is not None:
-        skewed_data = cut(skewed_data , threshold=threshold )
+    if cut_threshold is not None:
+        skewed_data = cut(skewed_data , cut_threshold=cut_threshold )
     return skewed_data
 
 def tangent(df, alpha=1e-3):
@@ -767,10 +767,10 @@ def train_submission(model, data, y=None):
 
 
 
-def build_run(model, X, y, W, all_sysTES, skew_function):
+def build_run(model, X, y, W, all_sysTES, skew_function, cut_threshold=22.0):
     run = {}
     for sysTES in all_sysTES:
-        X_skew = skew_function(X, z=sysTES)
+        X_skew = skew_function(X, z=sysTES, cut_threshold=cut_threshold)
         indexes = X_skew.index
         proba = model.predict_proba(X_skew)
         # n_samples_before = X.shape[0]
@@ -780,7 +780,7 @@ def build_run(model, X, y, W, all_sysTES, skew_function):
     return run
 
 
-def test_submission(data, models, all_sysTES=(1.0, 1.03, 1.05, 1.1) ):
+def test_submission(data, models, all_sysTES=(1.0, 1.03, 1.05, 1.1), cut_threshold=22.0 ):
     X = data
     y = data['Label']
     cv_iter = get_cv_iter(X, y)
@@ -794,7 +794,7 @@ def test_submission(data, models, all_sysTES=(1.0, 1.03, 1.05, 1.1) ):
         
         model = models[i]
         pprint('testing model {}/{}'.format(i+1, n_cv))
-        run_i = build_run(model, X_test, y_test, W_test, all_sysTES, skew_function=skewing_function)
+        run_i = build_run(model, X_test, y_test, W_test, all_sysTES, skew_function=skewing_function, cut_threshold=cut_threshold)
         xp.append(run_i)
     pprint('Done.')
     return xp
