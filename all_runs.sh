@@ -191,7 +191,7 @@ sbatch -p besteffort run.sh ANN --data higgs-geant --batch-size 1024 --width 0.0
 sbatch -p besteffort run.sh ANN --data higgs-geant --batch-size 1024 --width 0.05 --n-augment 2
 sbatch -p besteffort run.sh ANN --data higgs-geant --batch-size 1024 --width 0.05 --n-augment 5
 
-# # Pivot Adversarial Network vs trade-off
+# # Pivot Adversarial Network vs trade-off (width=0.03)
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.001
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 0.01
@@ -205,18 +205,41 @@ sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.03 --trade-off 1.0
 sbatch -p besteffort run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 1.0
 
-# # Pivot Adversarial Network vs recovery-steps
+# # Pivot Adversarial Network vs recovery-steps vs trade-off (width=0.05)
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.0 --n-recovery-steps 5 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.0 --n-recovery-steps 20 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.0 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.0 --n-recovery-steps 100 --n-steps 10000
+
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.001 --n-recovery-steps 5 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.001 --n-recovery-steps 20 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.001 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.001 --n-recovery-steps 100 --n-steps 10000
+
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.01 --n-recovery-steps 5 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.01 --n-recovery-steps 20 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.01 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.01 --n-recovery-steps 100 --n-steps 10000
+
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.1 --n-recovery-steps 5 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.1 --n-recovery-steps 20 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.1 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 0.1 --n-recovery-steps 100 --n-steps 10000
+
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 1.0 --n-recovery-steps 5 --n-steps 10000
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 1.0 --n-recovery-steps 20 --n-steps 10000
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 1.0 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 1.0 --n-recovery-steps 100 --n-steps 10000
 
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 10.0 --n-recovery-steps 5 --n-steps 10000
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 10.0 --n-recovery-steps 20 --n-steps 10000
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 10.0 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 10.0 --n-recovery-steps 100 --n-steps 10000
 
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 100.0 --n-recovery-steps 5 --n-steps 10000
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 100.0 --n-recovery-steps 20 --n-steps 10000
 sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 100.0 --n-recovery-steps 50 --n-steps 10000
+sbatch run.sh PAN --data higgs-geant --batch-size 1024 --width 0.05 --trade-off 100.0 --n-recovery-steps 100 --n-steps 10000
 
 
 # # Augmented Pivot Adversarial Network vs trade-off
@@ -239,4 +262,4 @@ sbatch -p besteffort run.sh NNC --data higgs-geant --batch-size 1024 --fraction-
 sbatch -p besteffort run.sh GB --data higgs-geant --learning-rate 0.1
 
 # # Gradient Boosting without skewed variables
-sbatch -p besteffort run.sh BGB --data higgs-geant --learning-rate 0.1
+sbatch --gres=gpu:0 -p besteffort run.sh BGB --data higgs-geant --learning-rate 0.1
